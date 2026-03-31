@@ -13,19 +13,11 @@ export function PageHeader({
   actions?: ReactNode;
 }) {
   return (
-    <div
-      style={{
-        display: "flex",
-        flexWrap: "wrap",
-        alignItems: "flex-end",
-        justifyContent: "space-between",
-        gap: "1rem",
-        marginBottom: "1.5rem",
-      }}
-    >
-      <div style={{ minWidth: 0, flex: "1 1 28rem" }}>
+    <div className="page-header">
+      <div className="page-header__copy" style={{ minWidth: 0, flex: "1 1 28rem" }}>
         <Tag
           bordered={false}
+          className="page-header__eyebrow"
           style={{
             margin: 0,
             background: "hsl(var(--accent-soft) / 0.6)",
@@ -42,33 +34,13 @@ export function PageHeader({
           {eyebrow}
         </Tag>
 
-        <h2
-          style={{
-            margin: "0.85rem 0 0.35rem",
-            fontFamily: "var(--font-display)",
-            fontSize: "clamp(1.65rem, 2.6vw, 2.2rem)",
-            lineHeight: 1.05,
-            letterSpacing: "-0.03em",
-            color: "hsl(var(--text-primary))",
-          }}
-        >
-          {title}
-        </h2>
+        <h1 className="page-header__title">{title}</h1>
 
-        <p
-          style={{
-            margin: 0,
-            lineHeight: 1.6,
-            maxWidth: 760,
-            color: "hsl(var(--text-muted))",
-          }}
-        >
-          {description}
-        </p>
+        <p className="page-header__description">{description}</p>
       </div>
 
       {actions && (
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", justifyContent: "flex-end" }}>
+        <div className="page-header__actions">
           {actions}
         </div>
       )}

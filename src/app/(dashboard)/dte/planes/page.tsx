@@ -1,4 +1,5 @@
 import { Alert, Card, Tag } from "antd";
+import type { ReactNode } from "react";
 import { DataTable } from "@/components/ui/DataTable";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { getErrorMessage } from "@/lib/error-message";
@@ -12,6 +13,10 @@ async function loadDtePlans() {
   } catch (cause) {
     return { error: getErrorMessage(cause) };
   }
+}
+
+function SectionLabel({ children }: { children: ReactNode }) {
+  return <span style={{ fontSize: 13, fontWeight: 700, color: "hsl(var(--text-secondary))" }}>{children}</span>;
 }
 
 export default async function DtePlanesPage() {
@@ -33,7 +38,7 @@ export default async function DtePlanesPage() {
         title="Planes DTE"
         description="Consulta server-side del catalogo de planes de factura-dte."
       />
-      <Card className="surface-card border-0">
+      <Card className="surface-card border-0" title={<SectionLabel>Catalogo de planes</SectionLabel>}>
         <DataTable
           columns={[
             { key: "plan", title: "Plan" },

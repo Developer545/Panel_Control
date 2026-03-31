@@ -1,5 +1,8 @@
-﻿import { Alert, Button, Tag } from "antd";
+﻿import { Alert, Button, Col, Row, Tag } from "antd";
+import { Building2, FileSpreadsheet, Receipt, Users } from "lucide-react";
+import type { ReactNode } from "react";
 import { DteTenantWorkspace } from "@/components/dte/DteTenantWorkspace";
+import { MetricCard } from "@/components/ui/MetricCard";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { getErrorMessage } from "@/lib/error-message";
 import {
@@ -16,6 +19,10 @@ import {
 
 function settledValue<T>(result: PromiseSettledResult<T>) {
   return result.status === "fulfilled" ? result.value : null;
+}
+
+function SectionLabel({ children }: { children: ReactNode }) {
+  return <span style={{ fontSize: 13, fontWeight: 700, color: "hsl(var(--text-secondary))" }}>{children}</span>;
 }
 
 async function loadDteTenantWorkspace(id: string) {
@@ -85,6 +92,10 @@ export default async function DteClienteDetallePage({
   }
 
   const { tenant, warnings, ...workspaceData } = result;
+  const pagosCount = workspaceData.pagos?.length ?? 0;
+  const usuariosCount = workspaceData.usuarios?.length ?? 0;
+  const sucursalesCount = workspaceData.sucursales?.length ?? 0;
+  const seriesCount = workspaceData.dte?.length ?? 0;
 
   return (
     <div className="space-y-6">
@@ -103,6 +114,37 @@ export default async function DteClienteDetallePage({
           </>
         }
       />
+
+      <Row gutter={[16, 16]}>
+        <Col xs={24} sm={12} xl={6}>
+          <MetricCard title="Usuarios" value={usuariosCount} accentVar="--section-dte" icon={<Users size={18} />} />
+        </Col>
+        <Col xs={24} sm={12} xl={6}>
+          <MetricCard title="Pagos" value={pagosCount} accentVar="--section-dte" icon={<Receipt size={18} />} />
+        </Col>
+        <Col xs={24} sm={12} xl={6}>
+          <MetricCard title="Sucursales" value={sucursalesCount} accentVar="--section-dte" icon={<Building2 size={18} />} />
+        </Col>
+        <Col xs={24} sm={12} xl={6}>
+          <MetricCard title="Series DTE" value={seriesCount} accentVar="--section-dte" icon={<FileSpreadsheet size={18} />} />
+        </Col>
+      </Row>
+
+      <div
+        className="surface-card border-0"
+        style={{
+          borderRadius: 20,
+          border: "1px solid hsl(var(--border-default))",
+          background: "hsl(var(--bg-surface))",
+          padding: "1rem 1.1rem",
+        }}
+      >
+        <SectionLabel>Workspace operativo</SectionLabel>
+        <div style={{ marginTop: 8, color: "hsl(var(--text-muted))", lineHeight: 1.7 }}>
+          Este panel consolida la cuenta, configuracion y telemetria del tenant seleccionado. La edicion sigue deshabilitada para conservar el flujo actual.
+        </div>
+      </div>
+
       <DteTenantWorkspace tenant={tenant} warnings={warnings} {...workspaceData} />
     </div>
   );

@@ -38,16 +38,38 @@ async function loadOverview() {
   };
 }
 
-function getStatusTone(status: string) {
-  if (status === "ok") return "success";
-  if (status === "degraded") return "warning";
-  return "error";
-}
-
 function getStatusLabel(status: string) {
   if (status === "ok") return "Operativo";
   if (status === "degraded") return "Con alerta";
   return "Sin conexion";
+}
+
+function getStatusStyles(status: string) {
+  if (status === "ok") {
+    return {
+      background: "hsl(var(--status-success-bg))",
+      color: "hsl(var(--status-success))",
+    };
+  }
+
+  if (status === "degraded") {
+    return {
+      background: "hsl(var(--status-warning-bg))",
+      color: "hsl(var(--status-warning))",
+    };
+  }
+
+  return {
+    background: "hsl(var(--status-error-bg))",
+    color: "hsl(var(--status-error))",
+  };
+}
+
+function getAccentStyles(accentVar: string) {
+  return {
+    color: `hsl(var(${accentVar}))`,
+    background: `hsl(var(${accentVar}) / 0.12)`,
+  };
 }
 
 export default async function OverviewV2() {
@@ -224,6 +246,158 @@ export default async function OverviewV2() {
         }
       />
 
+      <Card
+        className="surface-card border-0"
+        styles={{
+          body: {
+            display: "grid",
+            gap: "1.25rem",
+            padding: "1.5rem",
+            background:
+              "linear-gradient(135deg, hsl(var(--bg-surface)) 0%, hsl(var(--bg-subtle)) 100%)",
+          },
+        }}
+      >
+        <div
+          style={{
+            display: "grid",
+            gap: "1rem",
+            gridTemplateColumns: "minmax(0, 1.45fr) minmax(280px, 0.85fr)",
+            alignItems: "stretch",
+          }}
+        >
+          <div style={{ display: "grid", gap: "0.9rem" }}>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 10, alignItems: "center" }}>
+              <Tag
+                bordered={false}
+                style={{
+                  margin: 0,
+                  borderRadius: 999,
+                  paddingInline: "0.85rem",
+                  background: "hsl(var(--section-overview) / 0.12)",
+                  color: "hsl(var(--section-overview))",
+                  fontWeight: 700,
+                }}
+              >
+                Vista central
+              </Tag>
+              <span style={{ color: "hsl(var(--text-muted))", fontSize: 13 }}>
+                BarberPro-inspired control shell
+              </span>
+            </div>
+            <div style={{ display: "grid", gap: 10 }}>
+              <h1
+                style={{
+                  margin: 0,
+                  color: "hsl(var(--text-primary))",
+                  fontSize: "clamp(1.8rem, 4vw, 2.6rem)",
+                  lineHeight: 1.05,
+                  letterSpacing: "-0.03em",
+                }}
+              >
+                Un solo tablero para leer DTE, Barber Pro y ERP sin cambiar de contexto.
+              </h1>
+              <p
+                style={{
+                  margin: 0,
+                  maxWidth: 760,
+                  color: "hsl(var(--text-muted))",
+                  fontSize: 15,
+                  lineHeight: 1.65,
+                }}
+              >
+                La vista resume salud operativa, cobertura de tenants y alertas prioritarias con una
+                densidad visual más limpia y más cercana al dashboard de BarberPro.
+              </p>
+            </div>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
+              <Button href="/dte/dashboard" type="primary">
+                Abrir DTE
+              </Button>
+              <Button href="/barber/dashboard">Abrir Barber Pro</Button>
+              <Button href="/erp/dashboard">Abrir ERP</Button>
+            </div>
+          </div>
+
+          <div style={{ display: "grid", gap: 12, alignContent: "stretch" }}>
+            <div
+              style={{
+                display: "grid",
+                gap: 10,
+                padding: "1rem 1.1rem",
+                borderRadius: "1rem",
+                border: "1px solid hsl(var(--border-default))",
+                background: "hsl(var(--bg-surface))",
+              }}
+            >
+              <div style={{ display: "flex", justifyContent: "space-between", gap: 16 }}>
+                <div>
+                  <div style={{ color: "hsl(var(--text-muted))", fontSize: 13, marginBottom: 4 }}>
+                    Salud general
+                  </div>
+                  <div style={{ color: "hsl(var(--text-primary))", fontSize: 24, fontWeight: 800 }}>
+                    {healthyCount}/3
+                  </div>
+                </div>
+                <div style={{ textAlign: "right" }}>
+                  <div style={{ color: "hsl(var(--text-muted))", fontSize: 13, marginBottom: 4 }}>
+                    Conectados
+                  </div>
+                  <div style={{ color: "hsl(var(--text-primary))", fontSize: 24, fontWeight: 800 }}>
+                    {connectedCount}
+                  </div>
+                </div>
+              </div>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+                  gap: 10,
+                }}
+              >
+                <div style={{ borderRadius: 16, padding: "0.8rem 0.9rem", background: "hsl(var(--bg-subtle))" }}>
+                  <div style={{ color: "hsl(var(--text-muted))", fontSize: 12 }}>Operativos</div>
+                  <div style={{ color: "hsl(var(--text-primary))", fontSize: 18, fontWeight: 800 }}>
+                    {healthyCount}
+                  </div>
+                </div>
+                <div style={{ borderRadius: 16, padding: "0.8rem 0.9rem", background: "hsl(var(--bg-subtle))" }}>
+                  <div style={{ color: "hsl(var(--text-muted))", fontSize: 12 }}>Con alerta</div>
+                  <div style={{ color: "hsl(var(--text-primary))", fontSize: 18, fontWeight: 800 }}>
+                    {degradedCount}
+                  </div>
+                </div>
+                <div style={{ borderRadius: 16, padding: "0.8rem 0.9rem", background: "hsl(var(--bg-subtle))" }}>
+                  <div style={{ color: "hsl(var(--text-muted))", fontSize: 12 }}>Offline</div>
+                  <div style={{ color: "hsl(var(--text-primary))", fontSize: 18, fontWeight: 800 }}>
+                    {offlineCount}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div
+              style={{
+                display: "grid",
+                gap: 10,
+                padding: "1rem 1.1rem",
+                borderRadius: "1rem",
+                border: "1px solid hsl(var(--border-default))",
+                background: "hsl(var(--bg-surface))",
+              }}
+            >
+              <div style={{ color: "hsl(var(--text-muted))", fontSize: 13 }}>Cobertura global</div>
+              <div style={{ color: "hsl(var(--text-primary))", fontSize: 26, fontWeight: 800 }}>
+                {formatNumber(totalTenants)}
+              </div>
+              <div style={{ color: "hsl(var(--text-muted))", fontSize: 13, lineHeight: 1.5 }}>
+                {formatNumber(activeTenants)} tenants activos distribuidos entre DTE, Barber Pro y ERP.
+              </div>
+            </div>
+          </div>
+        </div>
+      </Card>
+
       <Row gutter={[16, 16]}>
         <Col xs={24} sm={12} xl={8}>
           <MetricCard
@@ -332,8 +506,7 @@ export default async function OverviewV2() {
                       borderRadius: 14,
                       display: "grid",
                       placeItems: "center",
-                      color: `hsl(var(${service.accentVar}))`,
-                      background: `hsl(var(${service.accentVar}) / 0.12)`,
+                      ...getAccentStyles(service.accentVar),
                       flexShrink: 0,
                     }}
                   >
@@ -353,8 +526,7 @@ export default async function OverviewV2() {
                     style={{
                       margin: 0,
                       borderRadius: 999,
-                      background: `hsl(var(--status-${getStatusTone(service.health?.status ?? "error")}-bg))`,
-                      color: `hsl(var(--status-${getStatusTone(service.health?.status ?? "error")}))`,
+                      ...getStatusStyles(service.health?.status ?? "error"),
                       fontWeight: 700,
                     }}
                   >
@@ -425,8 +597,7 @@ export default async function OverviewV2() {
                       borderRadius: 14,
                       display: "grid",
                       placeItems: "center",
-                      color: `hsl(var(${service.accentVar}))`,
-                      background: `hsl(var(${service.accentVar}) / 0.12)`,
+                      ...getAccentStyles(service.accentVar),
                       flexShrink: 0,
                     }}
                   >
@@ -461,8 +632,7 @@ export default async function OverviewV2() {
                     borderRadius: 14,
                     display: "grid",
                     placeItems: "center",
-                    color: "hsl(var(--section-overview))",
-                    background: "hsl(var(--section-overview) / 0.12)",
+                    ...getAccentStyles("--section-overview"),
                   }}
                 >
                   <CreditCard size={18} />

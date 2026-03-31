@@ -1,5 +1,6 @@
 import { Alert, Card, Col, Descriptions, Progress, Row, Tag } from "antd";
 import { Activity, Cpu, Database, Gauge, Server, ShieldCheck } from "lucide-react";
+import type { ReactNode } from "react";
 import { MetricCard } from "@/components/ui/MetricCard";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { getErrorMessage } from "@/lib/error-message";
@@ -26,6 +27,10 @@ function formatUptime(seconds: number) {
   const days = Math.floor(totalHours / 24);
   const hours = totalHours % 24;
   return days > 0 ? `${days}d ${hours}h` : `${hours}h`;
+}
+
+function SectionLabel({ children }: { children: ReactNode }) {
+  return <span style={{ fontSize: 13, fontWeight: 700, color: "hsl(var(--text-secondary))" }}>{children}</span>;
 }
 
 export default async function DteHealthPage() {
@@ -84,7 +89,7 @@ export default async function DteHealthPage() {
 
       <Row gutter={[16, 16]}>
         <Col xs={24} xl={14}>
-          <Card className="surface-card border-0" title="Base de datos">
+          <Card className="surface-card border-0" title={<SectionLabel>Base de datos</SectionLabel>}>
             <Descriptions column={1} bordered size="small">
               <Descriptions.Item label="Estado">
                 <Tag
@@ -120,7 +125,7 @@ export default async function DteHealthPage() {
         </Col>
 
         <Col xs={24} xl={10}>
-          <Card className="surface-card border-0" title="Proceso y memoria">
+          <Card className="surface-card border-0" title={<SectionLabel>Proceso y memoria</SectionLabel>}>
             <div style={{ display: "grid", gap: 12 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
                 <div style={{ width: 44, height: 44, borderRadius: 16, display: "grid", placeItems: "center", background: "hsl(var(--section-dte) / 0.12)", color: "hsl(var(--section-dte))" }}>
@@ -128,7 +133,7 @@ export default async function DteHealthPage() {
                 </div>
                 <div>
                   <div style={{ fontWeight: 700, color: "hsl(var(--text-primary))" }}>{health.process.environment}</div>
-                  <div style={{ color: "hsl(var(--text-muted))", fontSize: 13 }}>{health.process.node_version} · {health.process.platform} / {health.process.arch}</div>
+                  <div style={{ color: "hsl(var(--text-muted))", fontSize: 13 }}>{health.process.node_version} - {health.process.platform} / {health.process.arch}</div>
                 </div>
               </div>
 
@@ -154,7 +159,7 @@ export default async function DteHealthPage() {
 
       <Row gutter={[16, 16]}>
         <Col xs={24} xl={10}>
-          <Card className="surface-card border-0" title="Tenants del contrato">
+          <Card className="surface-card border-0" title={<SectionLabel>Tenants del contrato</SectionLabel>}>
             <div style={{ display: "grid", gap: 12 }}>
               <MetricCard title="Total" value={health.tenants.total} accentVar="--section-dte" icon={<Activity size={18} />} />
               <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 12 }}>
@@ -167,7 +172,7 @@ export default async function DteHealthPage() {
         </Col>
 
         <Col xs={24} xl={14}>
-          <Card className="surface-card border-0" title="Lectura operativa">
+          <Card className="surface-card border-0" title={<SectionLabel>Lectura operativa</SectionLabel>}>
             <div
               style={{
                 borderRadius: "1rem",

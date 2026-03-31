@@ -1,5 +1,6 @@
 import { Alert, Card, Col, Descriptions, Row, Tag } from "antd";
 import { Database, ShieldCheck } from "lucide-react";
+import type { ReactNode } from "react";
 import { DataTable } from "@/components/ui/DataTable";
 import { MetricCard } from "@/components/ui/MetricCard";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -14,6 +15,10 @@ async function loadBackups() {
   } catch (cause) {
     return { error: getErrorMessage(cause) };
   }
+}
+
+function SectionLabel({ children }: { children: ReactNode }) {
+  return <span style={{ fontSize: 13, fontWeight: 700, color: "hsl(var(--text-secondary))" }}>{children}</span>;
 }
 
 export default async function DteBackupsPage() {
@@ -81,7 +86,7 @@ export default async function DteBackupsPage() {
 
       <Row gutter={[16, 16]}>
         <Col xs={24} xl={16}>
-          <Card className="surface-card border-0" title="Respaldos disponibles">
+          <Card className="surface-card border-0" title={<SectionLabel>Respaldos disponibles</SectionLabel>}>
             <DataTable
               caption="Backups del sistema"
               columns={[
@@ -97,7 +102,7 @@ export default async function DteBackupsPage() {
         </Col>
 
         <Col xs={24} xl={8}>
-          <Card className="surface-card border-0" title="Lectura operativa">
+          <Card className="surface-card border-0" title={<SectionLabel>Lectura operativa</SectionLabel>}>
             <Descriptions bordered column={1} size="small">
               <Descriptions.Item label="Directorio">{backups.stats.backup_dir}</Descriptions.Item>
               <Descriptions.Item label="Ultimo backup">{formatDate(backups.stats.last_backup_at)}</Descriptions.Item>
@@ -109,7 +114,7 @@ export default async function DteBackupsPage() {
               style={{
                 marginTop: 16,
                 padding: "1rem",
-                borderRadius: "1rem",
+                borderRadius: 16,
                 border: "1px solid hsl(var(--border-default))",
                 background: "hsl(var(--bg-subtle))",
                 color: "hsl(var(--text-muted))",

@@ -58,57 +58,57 @@ export function DashboardChrome({ children }: { children: ReactNode }) {
   const sessionInitial = getInitials(session?.username);
 
   return (
-    <Layout hasSider style={{ minHeight: "100vh", background: "hsl(var(--bg-page))" }}>
+    <Layout className="control-dashboard" hasSider style={{ minHeight: "100vh", background: "transparent" }}>
       <ControlSidebar />
 
       <Layout style={{ background: "transparent" }}>
         <Header
+          className="control-dashboard__topbar"
           style={{
             height: "auto",
             lineHeight: 1,
-            padding: "0 24px",
-            background: "hsl(var(--bg-surface) / 0.88)",
-            backdropFilter: "blur(12px)",
-            WebkitBackdropFilter: "blur(12px)",
-            borderBottom: "1px solid hsl(var(--border-default))",
+            padding: "0 18px",
+            background: "transparent",
             position: "sticky",
             top: 0,
             zIndex: 10,
           }}
         >
           <div
+            className="control-dashboard__topbar-inner"
             style={{
-              height: 56,
+              minHeight: 64,
               display: "flex",
               alignItems: "center",
               justifyContent: "space-between",
               gap: 12,
             }}
           >
-            {/* Left: section tag + path */}
-            <Space size={8}>
+            <Space size={8} wrap>
               <Tag
                 bordered={false}
+                className="control-dashboard__section"
                 style={{
                   margin: 0,
                   background: `hsl(var(${active.accent}) / 0.12)`,
                   color: `hsl(var(${active.accent}))`,
                   borderRadius: 999,
-                  paddingInline: 10,
+                  paddingInline: 11,
                   fontWeight: 700,
-                  fontSize: 12,
-                  lineHeight: "24px",
+                  fontSize: 11,
+                  lineHeight: "22px",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.08em",
                 }}
               >
                 {active.label}
               </Tag>
-              <Text style={{ color: "hsl(var(--text-muted))", fontSize: 12, fontFamily: "monospace" }}>
+              <Text className="control-dashboard__path" style={{ color: "hsl(var(--text-muted))", fontSize: 11.5, fontFamily: "monospace" }}>
                 {pathname}
               </Text>
             </Space>
 
-            {/* Right: actions + user */}
-            <Space size={8}>
+            <Space className="control-dashboard__meta" size={8} wrap>
               {!onOverview && (
                 <Button size="small" type="default" onClick={() => router.push("/overview")}>
                   Ir al overview
@@ -124,14 +124,17 @@ export function DashboardChrome({ children }: { children: ReactNode }) {
                   borderRadius: 999,
                   paddingInline: 10,
                   fontWeight: 700,
-                  fontSize: 12,
-                  lineHeight: "24px",
+                  fontSize: 11,
+                  lineHeight: "22px",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.06em",
                 }}
               >
                 Operativo
               </Tag>
 
               <div
+                className="control-dashboard__user"
                 style={{
                   display: "inline-flex",
                   alignItems: "center",
@@ -154,7 +157,7 @@ export function DashboardChrome({ children }: { children: ReactNode }) {
                 >
                   {sessionInitial}
                 </Avatar>
-                <div>
+                <div className="control-dashboard__user-meta">
                   <div
                     style={{
                       color: "hsl(var(--text-primary))",
@@ -174,7 +177,9 @@ export function DashboardChrome({ children }: { children: ReactNode }) {
           </div>
         </Header>
 
-        <Content style={{ padding: 24 }}>{children}</Content>
+        <Content className="control-dashboard__content" style={{ padding: "18px 18px 28px" }}>
+          <div className="control-dashboard__frame">{children}</div>
+        </Content>
       </Layout>
     </Layout>
   );

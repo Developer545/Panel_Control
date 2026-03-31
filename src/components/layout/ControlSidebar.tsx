@@ -113,7 +113,7 @@ export function ControlSidebar() {
 
   return (
     <Sider
-      width={258}
+      width={244}
       collapsedWidth={72}
       collapsed={collapsed}
       trigger={null}
@@ -124,12 +124,12 @@ export function ControlSidebar() {
         {/* Brand */}
         <div
           style={{
-            minHeight: 68,
+            minHeight: 72,
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
             gap: 10,
-            padding: collapsed ? "14px 10px" : "14px 16px",
+            padding: collapsed ? "16px 10px" : "16px 16px",
             borderBottom: "1px solid hsl(var(--sidebar-border))",
           }}
         >
@@ -137,22 +137,11 @@ export function ControlSidebar() {
             <div className="panel-sider__mark">SC</div>
             {!collapsed && (
               <div style={{ minWidth: 0 }}>
-                <Text
-                  strong
-                  style={{ color: "hsl(var(--sidebar-fg))", fontSize: 13, display: "block", lineHeight: 1.2 }}
-                >
-                  Speeddan Control
+                <p className="panel-sider__eyebrow">Speeddan Control</p>
+                <Text strong style={{ color: "hsl(var(--sidebar-fg))", fontSize: 14, display: "block", lineHeight: 1.15 }}>
+                  Panel central v3
                 </Text>
-                <Text
-                  style={{
-                    color: "hsl(var(--sidebar-muted))",
-                    fontSize: 10,
-                    letterSpacing: "0.14em",
-                    textTransform: "uppercase",
-                  }}
-                >
-                  Panel multi-sistema
-                </Text>
+                <p className="panel-sider__caption">Superadmin multi-sistema</p>
               </div>
             )}
           </div>
@@ -168,7 +157,7 @@ export function ControlSidebar() {
         </div>
 
         {/* Navigation */}
-        <div style={{ flex: 1, overflowY: "auto", paddingBlock: 6 }}>
+        <div style={{ flex: 1, overflowY: "auto", padding: "10px 10px 12px" }}>
           <Menu
             theme="dark"
             mode="inline"
@@ -223,7 +212,7 @@ export function ControlSidebar() {
               style={{
                 marginTop: 10,
                 justifyContent: collapsed ? "center" : "flex-start",
-                color: "hsl(var(--sidebar-muted))",
+                color: "hsl(var(--sidebar-fg))",
                 paddingInline: collapsed ? 0 : 4,
               }}
             >

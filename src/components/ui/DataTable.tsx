@@ -29,58 +29,22 @@ export function DataTable({
   };
 
   return (
-    <div
-      style={{
-        overflow: "hidden",
-        borderRadius: "1.25rem",
-        border: "1px solid hsl(var(--border-default))",
-        background: "hsl(var(--bg-surface))",
-        boxShadow: "0 18px 40px hsl(var(--shadow-color) / 0.06)",
-      }}
-    >
+    <div className="data-table-shell">
       {caption ? (
-        <div
-          style={{
-            padding: "1rem 1.1rem 0.8rem 1.1rem",
-            borderBottom: "1px solid hsl(var(--border-default))",
-            color: "hsl(var(--text-secondary))",
-            fontSize: "0.88rem",
-            fontWeight: 600,
-            letterSpacing: "0.04em",
-            textTransform: "uppercase",
-          }}
-        >
+        <div className="data-table__caption">
           {caption}
         </div>
       ) : null}
-      <div style={{ overflowX: "auto" }}>
-        <table
-          style={{
-            width: "100%",
-            borderCollapse: "separate",
-            borderSpacing: 0,
-          }}
-        >
+      <div className="data-table__scroll">
+        <table className="data-table">
           <thead>
-            <tr>
+            <tr className="data-table__row">
               {columns.map((column) => (
                 <th
                   key={column.key}
-                  style={{
-                    position: "sticky",
-                    top: 0,
-                    zIndex: 1,
-                    background: "hsl(var(--bg-surface))",
-                    borderBottom: "1px solid hsl(var(--border-default))",
-                    padding: "0.95rem 1rem",
-                    color: "hsl(var(--text-secondary))",
-                    fontSize: "0.78rem",
-                    fontWeight: 700,
-                    letterSpacing: "0.08em",
-                    textTransform: "uppercase",
-                    textAlign: alignToText(column.align),
-                    whiteSpace: "nowrap",
-                  }}
+                  className="data-table__head"
+                  data-align={column.align}
+                  style={{ textAlign: alignToText(column.align) }}
                 >
                   {column.title}
                 </th>
@@ -90,17 +54,13 @@ export function DataTable({
           <tbody>
             {rows.length ? (
               rows.map((row) => (
-                <tr key={row.key}>
+                <tr key={row.key} className="data-table__row">
                   {row.cells.map((cell, index) => (
                     <td
                       key={`${row.key}-${columns[index]?.key ?? index}`}
-                      style={{
-                        borderBottom: "1px solid hsl(var(--border-default) / 0.75)",
-                        padding: "0.9rem 1rem",
-                        color: "hsl(var(--text-primary))",
-                        textAlign: alignToText(columns[index]?.align),
-                        verticalAlign: "middle",
-                      }}
+                      className="data-table__cell"
+                      data-align={columns[index]?.align}
+                      style={{ textAlign: alignToText(columns[index]?.align) }}
                     >
                       {cell}
                     </td>
@@ -111,11 +71,7 @@ export function DataTable({
               <tr>
                 <td
                   colSpan={columns.length}
-                  style={{
-                    padding: "1.5rem 1rem",
-                    textAlign: "center",
-                    color: "hsl(var(--text-muted))",
-                  }}
+                  className="data-table-empty"
                 >
                   {emptyState}
                 </td>

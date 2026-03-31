@@ -1,5 +1,6 @@
 import { Alert, Card, Col, Progress, Row, Tag } from "antd";
 import { BarChart3, Coins, ShieldCheck, TrendingUp, Users } from "lucide-react";
+import type { ReactNode } from "react";
 import { DataTable } from "@/components/ui/DataTable";
 import { MetricCard } from "@/components/ui/MetricCard";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -19,6 +20,30 @@ async function loadAnalytics() {
 function formatSignedPercent(value: number) {
   const sign = value >= 0 ? "+" : "";
   return `${sign}${formatNumber(Math.abs(value))}%`;
+}
+
+function SectionLabel({ children }: { children: ReactNode }) {
+  return <span style={{ fontSize: 13, fontWeight: 700, color: "hsl(var(--text-secondary))" }}>{children}</span>;
+}
+
+function InfoBlock({ label, value }: { label: string; value: string | number }) {
+  return (
+    <div
+      style={{
+        borderRadius: 16,
+        border: "1px solid hsl(var(--border-default))",
+        background: "hsl(var(--bg-surface))",
+        padding: "0.95rem 1rem",
+      }}
+    >
+      <div style={{ color: "hsl(var(--text-muted))", fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase" }}>
+        {label}
+      </div>
+      <div style={{ marginTop: 8, color: "hsl(var(--text-primary))", fontSize: 18, fontWeight: 800, lineHeight: 1.1 }}>
+        {value}
+      </div>
+    </div>
+  );
 }
 
 export default async function DteAnalyticsPage() {
@@ -78,7 +103,7 @@ export default async function DteAnalyticsPage() {
 
       <Row gutter={[16, 16]}>
         <Col xs={24} xl={14}>
-          <Card className="surface-card border-0" title="Serie mensual">
+          <Card className="surface-card border-0" title={<SectionLabel>Serie mensual</SectionLabel>}>
             <DataTable
               caption="Comportamiento economico"
               columns={[
@@ -104,7 +129,7 @@ export default async function DteAnalyticsPage() {
         </Col>
 
         <Col xs={24} xl={10}>
-          <Card className="surface-card border-0" title="Lectura del negocio">
+          <Card className="surface-card border-0" title={<SectionLabel>Lectura del negocio</SectionLabel>}>
             <div className="space-y-4">
               <div>
                 <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
@@ -117,7 +142,7 @@ export default async function DteAnalyticsPage() {
               <div
                 style={{
                   padding: "1rem",
-                  borderRadius: "1rem",
+                  borderRadius: 16,
                   background: "hsl(var(--bg-subtle))",
                   border: "1px solid hsl(var(--border-default))",
                   lineHeight: 1.7,
@@ -135,24 +160,10 @@ export default async function DteAnalyticsPage() {
               />
 
               {topPlan ? (
-                <div
-                  style={{
-                    padding: "1rem",
-                    borderRadius: "1rem",
-                    border: "1px solid hsl(var(--border-default))",
-                    background: "hsl(var(--bg-surface))",
-                  }}
-                >
-                  <div style={{ color: "hsl(var(--text-muted))", fontSize: 12, textTransform: "uppercase", letterSpacing: "0.08em" }}>
-                    Plan dominante
-                  </div>
-                  <div style={{ marginTop: 8, color: "hsl(var(--text-primary))", fontSize: 18, fontWeight: 700 }}>
-                    {topPlan.plan}
-                  </div>
-                  <div style={{ marginTop: 4, color: "hsl(var(--text-muted))", fontSize: 13 }}>
-                    {formatNumber(topPlan.total)} tenants, {formatNumber(topPlan.activos)} activos, {formatCurrency(topPlan.precio)}
-                  </div>
-                </div>
+                <InfoBlock
+                  label="Plan dominante"
+                  value={`${topPlan.plan} - ${formatNumber(topPlan.total)} tenants`}
+                />
               ) : null}
             </div>
           </Card>
@@ -161,7 +172,7 @@ export default async function DteAnalyticsPage() {
 
       <Row gutter={[16, 16]}>
         <Col xs={24} xl={12}>
-          <Card className="surface-card border-0" title="Distribucion por plan">
+          <Card className="surface-card border-0" title={<SectionLabel>Distribucion por plan</SectionLabel>}>
             <DataTable
               caption="Mix comercial"
               columns={[
@@ -185,7 +196,7 @@ export default async function DteAnalyticsPage() {
         </Col>
 
         <Col xs={24} xl={12}>
-          <Card className="surface-card border-0" title="Estados del portafolio">
+          <Card className="surface-card border-0" title={<SectionLabel>Estados del portafolio</SectionLabel>}>
             <DataTable
               caption="Salud de cartera"
               columns={[
@@ -230,29 +241,10 @@ export default async function DteAnalyticsPage() {
                 gap: 12,
               }}
             >
-              {[
-                ["Ingreso anual", formatCurrency(analytics.kpis.ingreso_ytd)],
-                ["Nuevos del mes", formatNumber(analytics.kpis.nuevos_mes)],
-                ["Activaciones", formatNumber(analytics.kpis.activaciones_mes)],
-                ["Suspensiones", formatNumber(analytics.kpis.suspensiones_mes)],
-              ].map(([label, value]) => (
-                <div
-                  key={label}
-                  style={{
-                    borderRadius: "1rem",
-                    border: "1px solid hsl(var(--border-default))",
-                    background: "hsl(var(--bg-subtle))",
-                    padding: "1rem",
-                  }}
-                >
-                  <div style={{ color: "hsl(var(--text-muted))", fontSize: 12, textTransform: "uppercase", letterSpacing: "0.08em" }}>
-                    {label}
-                  </div>
-                  <div style={{ marginTop: 8, color: "hsl(var(--text-primary))", fontSize: 22, fontWeight: 800 }}>
-                    {value}
-                  </div>
-                </div>
-              ))}
+              <InfoBlock label="Ingreso anual" value={formatCurrency(analytics.kpis.ingreso_ytd)} />
+              <InfoBlock label="Nuevos del mes" value={formatNumber(analytics.kpis.nuevos_mes)} />
+              <InfoBlock label="Activaciones" value={formatNumber(analytics.kpis.activaciones_mes)} />
+              <InfoBlock label="Suspensiones" value={formatNumber(analytics.kpis.suspensiones_mes)} />
             </div>
           </Card>
         </Col>

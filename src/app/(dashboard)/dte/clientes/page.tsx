@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { Alert, Button, Card, Col, Row, Tag } from "antd";
+import { Alert, Button, Card, Col, Input, Row, Tag } from "antd";
 import { BarChart3, Building2, CreditCard, Database, Map, Palette, ShieldCheck, Users } from "lucide-react";
+import type { ReactNode } from "react";
 import { DataTable } from "@/components/ui/DataTable";
 import { MetricCard } from "@/components/ui/MetricCard";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -67,17 +68,17 @@ function QuickAccessGrid() {
               alignItems: "center",
               justifyContent: "space-between",
               gap: "0.75rem",
-              borderRadius: "1rem",
+              borderRadius: 16,
               border: "1px solid hsl(var(--border-default))",
               background: "hsl(var(--bg-surface))",
               padding: "0.9rem 1rem",
               minHeight: "4.25rem",
             }}
-          >
-            <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", minWidth: 0 }}>
-              <div
-                style={{
-                  width: "2.3rem",
+              >
+                <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", minWidth: 0 }}>
+                  <div
+                    style={{
+                      width: "2.3rem",
                   height: "2.3rem",
                   borderRadius: "0.85rem",
                   display: "grid",
@@ -97,8 +98,8 @@ function QuickAccessGrid() {
                   {item.helper}
                 </div>
               </div>
-            </div>
-          </Link>
+                </div>
+              </Link>
         );
       })}
     </div>
@@ -113,6 +114,28 @@ function stateStyle(estado: string) {
     return { background: "hsl(var(--status-warning-bg))", color: "hsl(var(--status-warning))" };
   }
   return { background: "hsl(var(--status-error-bg))", color: "hsl(var(--status-error))" };
+}
+
+function SectionLabel({ children }: { children: ReactNode }) {
+  return <span style={{ fontSize: 13, fontWeight: 700, color: "hsl(var(--text-secondary))" }}>{children}</span>;
+}
+
+function MiniStat({ label, value }: { label: string; value: string | number }) {
+  return (
+    <div
+      style={{
+        borderRadius: 16,
+        padding: "0.95rem",
+        border: "1px solid hsl(var(--border-default))",
+        background: "hsl(var(--bg-subtle))",
+      }}
+    >
+      <div style={{ fontSize: 11, color: "hsl(var(--text-muted))", textTransform: "uppercase", letterSpacing: "0.08em" }}>
+        {label}
+      </div>
+      <strong style={{ display: "block", marginTop: 6, fontFamily: "var(--font-display)", fontSize: "1.35rem" }}>{value}</strong>
+    </div>
+  );
 }
 
 export default async function DteClientesPage({ searchParams }: { searchParams?: SearchParams }) {
@@ -192,6 +215,7 @@ export default async function DteClientesPage({ searchParams }: { searchParams?:
 
       <Card
         className="surface-card border-0"
+        title={<SectionLabel>Resumen operativo</SectionLabel>}
         styles={{
           body: {
             display: "grid",
@@ -200,17 +224,17 @@ export default async function DteClientesPage({ searchParams }: { searchParams?:
           },
         }}
       >
-        <div
-          style={{
-            display: "grid",
-            gap: "1rem",
-            gridTemplateColumns: "repeat(auto-fit, minmax(18rem, 1fr))",
-            alignItems: "center",
-          }}
-        >
-          <div>
-            <Tag bordered={false} style={{ margin: 0, borderRadius: 999, background: "hsl(var(--accent-soft) / 0.72)", color: "hsl(var(--accent-strong))", fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase" }}>
-              Maestro de clientes
+            <div
+              style={{
+                display: "grid",
+                gap: "1rem",
+                gridTemplateColumns: "repeat(auto-fit, minmax(18rem, 1fr))",
+                alignItems: "center",
+              }}
+            >
+              <div>
+                <Tag bordered={false} style={{ margin: 0, borderRadius: 999, background: "hsl(var(--accent-soft) / 0.72)", color: "hsl(var(--accent-strong))", fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase" }}>
+                  Maestro de clientes
             </Tag>
             <h3
               style={{
@@ -229,27 +253,18 @@ export default async function DteClientesPage({ searchParams }: { searchParams?:
             </p>
           </div>
 
-          <div
-            style={{
-              display: "grid",
-              gap: "0.75rem",
-              gridTemplateColumns: "repeat(auto-fit, minmax(9rem, 1fr))",
-            }}
-          >
-            <div style={{ borderRadius: "1rem", padding: "0.95rem", border: "1px solid hsl(var(--border-default))", background: "hsl(var(--bg-subtle))" }}>
-              <div style={{ fontSize: "0.78rem", color: "hsl(var(--text-muted))" }}>Activos</div>
-              <strong style={{ display: "block", marginTop: "0.35rem", fontFamily: "var(--font-display)", fontSize: "1.35rem" }}>{formatNumber(activos)}</strong>
-            </div>
-            <div style={{ borderRadius: "1rem", padding: "0.95rem", border: "1px solid hsl(var(--border-default))", background: "hsl(var(--bg-subtle))" }}>
-              <div style={{ fontSize: "0.78rem", color: "hsl(var(--text-muted))" }}>Pruebas</div>
-              <strong style={{ display: "block", marginTop: "0.35rem", fontFamily: "var(--font-display)", fontSize: "1.35rem" }}>{formatNumber(pruebas)}</strong>
-            </div>
-            <div style={{ borderRadius: "1rem", padding: "0.95rem", border: "1px solid hsl(var(--border-default))", background: "hsl(var(--bg-subtle))" }}>
-              <div style={{ fontSize: "0.78rem", color: "hsl(var(--text-muted))" }}>Vencidos</div>
-              <strong style={{ display: "block", marginTop: "0.35rem", fontFamily: "var(--font-display)", fontSize: "1.35rem" }}>{formatNumber(vencidos)}</strong>
+            <div
+              style={{
+                display: "grid",
+                gap: "0.75rem",
+                gridTemplateColumns: "repeat(auto-fit, minmax(9rem, 1fr))",
+              }}
+            >
+              <MiniStat label="Activos" value={formatNumber(activos)} />
+              <MiniStat label="Pruebas" value={formatNumber(pruebas)} />
+              <MiniStat label="Vencidos" value={formatNumber(vencidos)} />
             </div>
           </div>
-        </div>
       </Card>
 
       <Row gutter={[16, 16]}>
@@ -275,12 +290,9 @@ export default async function DteClientesPage({ searchParams }: { searchParams?:
 
       <Row gutter={[16, 16]}>
         <Col xs={24} xl={16}>
-          <Card className="surface-card border-0" styles={{ body: { display: "grid", gap: "0.9rem" } }}>
+          <Card className="surface-card border-0" title={<SectionLabel>Buscar y filtrar</SectionLabel>} styles={{ body: { display: "grid", gap: "0.9rem" } }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "0.75rem", flexWrap: "wrap" }}>
               <div>
-                <div style={{ fontSize: "0.85rem", fontWeight: 700, color: "hsl(var(--text-primary))" }}>
-                  Buscar y filtrar
-                </div>
                 <div style={{ fontSize: "0.82rem", color: "hsl(var(--text-muted))" }}>
                   {formatNumber(filtered.length)} resultados visibles de {formatNumber(tenants.length)}
                 </div>
@@ -312,18 +324,12 @@ export default async function DteClientesPage({ searchParams }: { searchParams?:
 
             <form method="get" action="/dte/clientes" style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
               <input type="hidden" name="estado" value={estado === "todos" ? "" : estado} />
-              <input
+              <Input
                 name="q"
                 defaultValue={q}
                 placeholder="Buscar por nombre, slug, plan, correo o telefono..."
-                style={{
-                  flex: "1 1 20rem",
-                  borderRadius: "1rem",
-                  border: "1px solid hsl(var(--border-default))",
-                  background: "hsl(var(--bg-surface))",
-                  padding: "0.85rem 1rem",
-                  color: "hsl(var(--text-primary))",
-                }}
+                allowClear
+                style={{ flex: "1 1 20rem" }}
               />
               <Button htmlType="submit" type="default">
                 Buscar
@@ -336,7 +342,7 @@ export default async function DteClientesPage({ searchParams }: { searchParams?:
             </form>
           </Card>
 
-          <Card className="surface-card border-0" style={{ marginTop: 16 }}>
+          <Card className="surface-card border-0" title={<SectionLabel>Listado de clientes</SectionLabel>} style={{ marginTop: 16 }}>
             <DataTable
               caption="Listado maestro de clientes DTE"
               columns={[
@@ -374,11 +380,8 @@ export default async function DteClientesPage({ searchParams }: { searchParams?:
         </Col>
 
         <Col xs={24} xl={8}>
-          <Card className="surface-card border-0" styles={{ body: { display: "grid", gap: "0.9rem" } }}>
+          <Card className="surface-card border-0" title={<SectionLabel>Accesos rapidos</SectionLabel>} styles={{ body: { display: "grid", gap: "0.9rem" } }}>
             <div>
-              <div style={{ fontSize: "0.85rem", fontWeight: 700, color: "hsl(var(--text-primary))" }}>
-                Accesos rapidos
-              </div>
               <div style={{ fontSize: "0.82rem", color: "hsl(var(--text-muted))" }}>
                 Entra directo a los modulos que suelen usarse mas seguido.
               </div>
@@ -386,7 +389,7 @@ export default async function DteClientesPage({ searchParams }: { searchParams?:
             <QuickAccessGrid />
           </Card>
 
-          <Card className="surface-card border-0" style={{ marginTop: 16 }}>
+          <Card className="surface-card border-0" title={<SectionLabel>Lectura rapida</SectionLabel>} style={{ marginTop: 16 }}>
             <DataTable
               caption="Lectura rapida"
               columns={[

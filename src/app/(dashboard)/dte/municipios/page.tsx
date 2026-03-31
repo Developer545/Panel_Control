@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Alert, Button, Card, Col, Input, Row, Tag } from "antd";
 import { MapPinned, Search, ShieldCheck } from "lucide-react";
+import type { ReactNode } from "react";
 import { DataTable } from "@/components/ui/DataTable";
 import { MetricCard } from "@/components/ui/MetricCard";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -29,6 +30,10 @@ function buildHref(departamentoId: number | "all", search: string) {
   if (search.trim()) params.set("q", search.trim());
   const query = params.toString();
   return query ? `/dte/municipios?${query}` : "/dte/municipios";
+}
+
+function SectionLabel({ children }: { children: ReactNode }) {
+  return <span style={{ fontSize: 13, fontWeight: 700, color: "hsl(var(--text-secondary))" }}>{children}</span>;
 }
 
 export default async function DteMunicipiosPage({
@@ -81,7 +86,7 @@ export default async function DteMunicipiosPage({
 
       <Row gutter={[16, 16]}>
         <Col xs={24} xl={9}>
-          <Card className="surface-card border-0" title="Filtros territoriales">
+          <Card className="surface-card border-0" title={<SectionLabel>Filtros territoriales</SectionLabel>}>
             <form action="/dte/municipios" method="get" style={{ display: "grid", gap: 12 }}>
               <Input
                 allowClear
@@ -126,7 +131,7 @@ export default async function DteMunicipiosPage({
         </Col>
 
         <Col xs={24} xl={15}>
-          <Card className="surface-card border-0">
+          <Card className="surface-card border-0" title={<SectionLabel>Catalogo territorial</SectionLabel>}>
             <DataTable
               columns={[
                 { key: "codigo", title: "Codigo" },

@@ -42,8 +42,12 @@ export default async function BarberDashboardPage() {
         <Col xs={24} md={12} xl={6}><MetricCard title="En trial" value={formatNumber(result.dashboard.en_trial)} accentVar="--section-barber" tone="warning" /></Col>
         <Col xs={24} md={12} xl={6}><MetricCard title="Suspendidos" value={formatNumber(result.dashboard.suspendidos)} accentVar="--section-barber" tone="danger" /></Col>
       </Row>
-      <Card className="surface-card border-0">
+      <Card
+        className="surface-card border-0"
+        title={<span className="text-sm font-semibold text-[hsl(var(--text-secondary))]">Distribucion por plan</span>}
+      >
         <DataTable
+          caption="Barberias activas por plan dentro del panel Barber Pro."
           columns={[
             { key: "plan", title: "Plan" },
             { key: "total", title: "Total", align: "right" },

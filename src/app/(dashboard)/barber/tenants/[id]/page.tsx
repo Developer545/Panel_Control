@@ -1,4 +1,5 @@
 import { Alert, Card, Col, Descriptions, Row, Tag } from "antd";
+import { MetricCard } from "@/components/ui/MetricCard";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { getErrorMessage } from "@/lib/error-message";
 import { formatDate } from "@/lib/formatters";
@@ -35,15 +36,56 @@ export default async function BarberTenantDetailPage({
 
   return (
     <div className="space-y-6">
-      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 16 }}>
-        <PageHeader eyebrow="Barber" title={tenant.name} description="Detalle del tenant Barber Pro con capacidad operativa y consumo base." />
-        <div style={{ paddingTop: 4, flexShrink: 0 }}>
-          <BarberTenantActions tenantId={tenant.id} status={tenant.status} />
-        </div>
-      </div>
+      <PageHeader
+        eyebrow="Barber"
+        title={tenant.name}
+        description="Detalle del tenant Barber Pro con capacidad operativa y consumo base."
+        actions={<BarberTenantActions tenantId={tenant.id} status={tenant.status} />}
+      />
+      <Row gutter={[16, 16]}>
+        <Col xs={24} md={12} xl={6}>
+          <MetricCard
+            title="Estado"
+            value={tenant.status}
+            accentVar="--section-barber"
+            tone={tenant.status === "ACTIVE" ? "success" : tenant.status === "TRIAL" ? "warning" : "danger"}
+            hint="Estado operativo actual"
+          />
+        </Col>
+        <Col xs={24} md={12} xl={6}>
+          <MetricCard
+            title="Plan"
+            value={tenant.plan}
+            accentVar="--section-barber"
+            tone="section"
+            hint="Suscripcion asignada al tenant"
+          />
+        </Col>
+        <Col xs={24} md={12} xl={6}>
+          <MetricCard
+            title="Max barberos"
+            value={tenant.maxBarbers}
+            accentVar="--section-barber"
+            tone="neutral"
+            hint="Capacidad configurada para el tenant"
+          />
+        </Col>
+        <Col xs={24} md={12} xl={6}>
+          <MetricCard
+            title="Actividad"
+            value={tenant._count.users + tenant._count.barbers + tenant._count.appointments}
+            accentVar="--section-barber"
+            tone="section"
+            hint={`${tenant._count.users} usuarios, ${tenant._count.barbers} barberos y ${tenant._count.appointments} citas`}
+          />
+        </Col>
+      </Row>
       <Row gutter={[16, 16]}>
         <Col xs={24} xl={14}>
-          <Card className="surface-card border-0">
+          <Card
+            className="surface-card border-0"
+            title={<span className="text-sm font-semibold text-[hsl(var(--text-secondary))]">Perfil operativo</span>}
+          >
             <Descriptions bordered column={1}>
               <Descriptions.Item label="Slug">{tenant.slug}</Descriptions.Item>
               <Descriptions.Item label="Plan">{tenant.plan}</Descriptions.Item>
@@ -60,7 +102,10 @@ export default async function BarberTenantDetailPage({
           </Card>
         </Col>
         <Col xs={24} xl={10}>
-          <Card className="surface-card border-0">
+          <Card
+            className="surface-card border-0"
+            title={<span className="text-sm font-semibold text-[hsl(var(--text-secondary))]">Consumo y sistema</span>}
+          >
             <Descriptions bordered column={1}>
               <Descriptions.Item label="Max barberos">{tenant.maxBarbers}</Descriptions.Item>
               <Descriptions.Item label="Usuarios">{tenant._count.users}</Descriptions.Item>

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Alert, Card, Col, Descriptions, Row, Table, Tag } from "antd";
 import type { TableColumnsType } from "antd";
+import type { ReactNode } from "react";
 import {
   Activity,
   BarChart3,
@@ -52,6 +53,40 @@ function getHealthLabel(status: string) {
   return "Sin conexion";
 }
 
+function SectionLabel({ children }: { children: ReactNode }) {
+  return <span style={{ fontSize: 13, fontWeight: 700, color: "hsl(var(--text-secondary))" }}>{children}</span>;
+}
+
+function MetricTile({
+  label,
+  value,
+  accent,
+}: {
+  label: string;
+  value: string | number;
+  accent: string;
+}) {
+  return (
+    <div
+      style={{
+        borderRadius: 16,
+        border: "1px solid hsl(var(--border-default))",
+        background: "hsl(var(--bg-surface))",
+        padding: "0.95rem 1rem",
+        boxShadow: "var(--shadow-sm)",
+      }}
+    >
+      <div style={{ width: 36, height: 4, borderRadius: 999, background: accent, marginBottom: 10 }} />
+      <div style={{ color: "hsl(var(--text-muted))", fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase" }}>
+        {label}
+      </div>
+      <div style={{ marginTop: 8, color: "hsl(var(--text-primary))", fontFamily: "var(--font-display)", fontSize: 22, fontWeight: 800, lineHeight: 1 }}>
+        {value}
+      </div>
+    </div>
+  );
+}
+
 function QuickAccessGrid() {
   return (
     <Row gutter={[12, 12]}>
@@ -59,13 +94,15 @@ function QuickAccessGrid() {
         const Icon = item.icon;
         return (
           <Col xs={12} sm={8} md={6} xl={4} key={item.href}>
-            <Link href={item.href} style={{ display: "block" }}>
+            <Link href={item.href} style={{ display: "block", height: "100%" }}>
               <Card
                 hoverable
                 size="small"
+                className="surface-card border-0"
                 style={{ height: "100%", cursor: "pointer" }}
                 styles={{
                   body: {
+                    minHeight: 108,
                     padding: "14px 12px",
                     display: "flex",
                     flexDirection: "column",
@@ -339,11 +376,7 @@ export default async function DteDashboardPage() {
       {/* Quick access */}
       <Card
         className="surface-card border-0"
-        title={
-          <span style={{ fontSize: 13, fontWeight: 700, color: "hsl(var(--text-secondary))" }}>
-            Acceso rapido — modulos DTE
-          </span>
-        }
+        title={<SectionLabel>Acceso rapido - modulos DTE</SectionLabel>}
         size="small"
       >
         <QuickAccessGrid />
@@ -354,11 +387,7 @@ export default async function DteDashboardPage() {
         <Col xs={24} xl={15}>
           <Card
             className="surface-card border-0"
-            title={
-              <span style={{ fontSize: 13, fontWeight: 700, color: "hsl(var(--text-secondary))" }}>
-                Alertas de renovacion
-              </span>
-            }
+            title={<SectionLabel>Alertas de renovacion</SectionLabel>}
             size="small"
             extra={
               <Tag bordered={false} color={alertas.length > 0 ? "warning" : "success"}>
@@ -380,11 +409,7 @@ export default async function DteDashboardPage() {
         <Col xs={24} xl={9}>
           <Card
             className="surface-card border-0"
-            title={
-              <span style={{ fontSize: 13, fontWeight: 700, color: "hsl(var(--text-secondary))" }}>
-                Salud del servicio
-              </span>
-            }
+            title={<SectionLabel>Salud del servicio</SectionLabel>}
             size="small"
             extra={
               health ? (
@@ -427,11 +452,7 @@ export default async function DteDashboardPage() {
         <Col xs={24} xl={12}>
           <Card
             className="surface-card border-0"
-            title={
-              <span style={{ fontSize: 13, fontWeight: 700, color: "hsl(var(--text-secondary))" }}>
-                Resumen de cartera
-              </span>
-            }
+            title={<SectionLabel>Resumen de cartera</SectionLabel>}
             size="small"
           >
             <Descriptions
@@ -447,70 +468,28 @@ export default async function DteDashboardPage() {
         <Col xs={24} xl={12}>
           <Card
             className="surface-card border-0"
-            title={
-              <span style={{ fontSize: 13, fontWeight: 700, color: "hsl(var(--text-secondary))" }}>
-                Lectura operativa
-              </span>
-            }
+            title={<SectionLabel>Lectura operativa</SectionLabel>}
             size="small"
             extra={
               <a href="/dte/clientes" style={{ fontSize: 12, color: "hsl(var(--section-dte))", fontWeight: 600 }}>
-                Abrir clientes →
+                Abrir clientes
               </a>
             }
           >
             <Row gutter={[12, 12]} style={{ marginBottom: 16 }}>
               <Col xs={12}>
-                <div
-                  style={{
-                    borderRadius: 12,
-                    padding: "14px",
-                    border: "1px solid hsl(var(--border-default))",
-                    background: "hsl(var(--bg-subtle))",
-                  }}
-                >
-                  <div style={{ fontSize: 11, color: "hsl(var(--text-muted))", marginBottom: 6 }}>
-                    Renovacion activa
-                  </div>
-                  <div
-                    style={{
-                      fontFamily: "var(--font-display)",
-                      fontSize: "1.6rem",
-                      fontWeight: 700,
-                      lineHeight: 1,
-                      letterSpacing: "-0.04em",
-                      color: "hsl(var(--section-dte))",
-                    }}
-                  >
-                    {formatNumber(dashboard.total - dashboard.suspendidos)}
-                  </div>
-                </div>
+                <MetricTile
+                  label="Renovacion activa"
+                  value={formatNumber(dashboard.total - dashboard.suspendidos)}
+                  accent="hsl(var(--section-dte))"
+                />
               </Col>
               <Col xs={12}>
-                <div
-                  style={{
-                    borderRadius: 12,
-                    padding: "14px",
-                    border: "1px solid hsl(var(--border-default))",
-                    background: "hsl(var(--bg-subtle))",
-                  }}
-                >
-                  <div style={{ fontSize: 11, color: "hsl(var(--text-muted))", marginBottom: 6 }}>
-                    Alertas abiertas
-                  </div>
-                  <div
-                    style={{
-                      fontFamily: "var(--font-display)",
-                      fontSize: "1.6rem",
-                      fontWeight: 700,
-                      lineHeight: 1,
-                      letterSpacing: "-0.04em",
-                      color: alertas.length > 0 ? "hsl(var(--state-warning))" : "hsl(var(--state-success))",
-                    }}
-                  >
-                    {formatNumber(alertas.length)}
-                  </div>
-                </div>
+                <MetricTile
+                  label="Alertas abiertas"
+                  value={formatNumber(alertas.length)}
+                  accent={alertas.length > 0 ? "hsl(var(--state-warning))" : "hsl(var(--state-success))"}
+                />
               </Col>
             </Row>
 

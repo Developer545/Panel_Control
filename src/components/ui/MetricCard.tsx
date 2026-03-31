@@ -33,7 +33,7 @@ export function MetricCard({
 
   return (
     <Card
-      className="surface-card border-0 h-full"
+      className="surface-card metric-card border-0 h-full"
       size="small"
       style={{ borderTop: `3px solid hsl(var(${colorVar}))` }}
       styles={{
@@ -41,48 +41,27 @@ export function MetricCard({
           display: "flex",
           minHeight: "100%",
           flexDirection: "column",
-          gap: "0.7rem",
+          gap: "0.75rem",
           padding: "1rem 1rem 0.95rem",
         },
       }}
     >
       <div
-        style={{
-          display: "flex",
-          alignItems: "flex-start",
-          justifyContent: "space-between",
-          gap: "0.75rem",
-        }}
+        className="metric-card__eyebrow"
       >
         <div style={{ minWidth: 0 }}>
-          <div
-            style={{
-              color: "hsl(var(--text-secondary))",
-              fontSize: "0.76rem",
-              fontWeight: 700,
-              letterSpacing: "0.12em",
-              textTransform: "uppercase",
-              lineHeight: 1.35,
-            }}
-          >
+          <div className="metric-card__kicker">
+            <span
+              className="metric-card__dot"
+              style={{ background: `hsl(var(${colorVar}))` }}
+            />
             {title}
           </div>
-          {hint ? (
-            <div
-              style={{
-                marginTop: "0.4rem",
-                fontSize: "0.82rem",
-                lineHeight: 1.45,
-                color: "hsl(var(--text-muted))",
-              }}
-            >
-              {hint}
-            </div>
-          ) : null}
         </div>
 
         {icon ? (
           <div
+            className="metric-card__icon"
             style={{
               color: `hsl(var(${colorVar}))`,
               flexShrink: 0,
@@ -91,7 +70,7 @@ export function MetricCard({
               justifyContent: "center",
               width: "2.4rem",
               height: "2.4rem",
-              borderRadius: "0.9rem",
+              borderRadius: "999px",
               background: `hsl(var(${colorVar}) / 0.12)`,
             }}
           >
@@ -100,8 +79,11 @@ export function MetricCard({
         ) : null}
       </div>
 
+      {hint ? <p className="metric-card__hint">{hint}</p> : null}
+
       {isNumericValue ? (
         <Statistic
+          className="metric-card__value"
           value={value}
           suffix={suffix}
           valueStyle={{
@@ -113,6 +95,7 @@ export function MetricCard({
         />
       ) : (
         <div
+          className="metric-card__value metric-card__value--text"
           style={{
             color: `hsl(var(${colorVar}))`,
             fontFamily: "var(--font-display)",

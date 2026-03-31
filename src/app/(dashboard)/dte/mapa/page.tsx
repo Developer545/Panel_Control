@@ -1,5 +1,6 @@
 import { Alert, Card, Col, Progress, Row, Tag } from "antd";
 import { Map, MapPinned } from "lucide-react";
+import type { ReactNode } from "react";
 import { MetricCard } from "@/components/ui/MetricCard";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { DataTable } from "@/components/ui/DataTable";
@@ -14,6 +15,10 @@ async function loadMap() {
   } catch (cause) {
     return { error: getErrorMessage(cause) };
   }
+}
+
+function SectionLabel({ children }: { children: ReactNode }) {
+  return <span style={{ fontSize: 13, fontWeight: 700, color: "hsl(var(--text-secondary))" }}>{children}</span>;
 }
 
 export default async function DteMapaPage() {
@@ -73,7 +78,7 @@ export default async function DteMapaPage() {
 
       <Row gutter={[16, 16]}>
         <Col xs={24} xl={15}>
-          <Card className="surface-card border-0" title="Cobertura por departamento">
+          <Card className="surface-card border-0" title={<SectionLabel>Cobertura por departamento</SectionLabel>}>
             <DataTable
               caption="Distribucion territorial"
               columns={[
@@ -101,7 +106,7 @@ export default async function DteMapaPage() {
         </Col>
 
         <Col xs={24} xl={9}>
-          <Card className="surface-card border-0" title="Lectura geografica">
+          <Card className="surface-card border-0" title={<SectionLabel>Lectura geografica</SectionLabel>}>
             <div className="space-y-4">
               <div>
                 <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
@@ -114,7 +119,7 @@ export default async function DteMapaPage() {
               <div
                 style={{
                   padding: "1rem",
-                  borderRadius: "1rem",
+                  borderRadius: 16,
                   background: "hsl(var(--bg-subtle))",
                   border: "1px solid hsl(var(--border-default))",
                   lineHeight: 1.7,
@@ -128,7 +133,7 @@ export default async function DteMapaPage() {
                 <div
                   style={{
                     padding: "1rem",
-                    borderRadius: "1rem",
+                    borderRadius: 16,
                     border: "1px solid hsl(var(--border-default))",
                     background: "hsl(var(--bg-surface))",
                   }}
@@ -161,7 +166,7 @@ export default async function DteMapaPage() {
                   <div
                     key={label}
                     style={{
-                      borderRadius: "1rem",
+                      borderRadius: 16,
                       border: "1px solid hsl(var(--border-default))",
                       background: "hsl(var(--bg-subtle))",
                       padding: "0.9rem",

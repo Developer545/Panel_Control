@@ -1,5 +1,6 @@
 import { Alert, Button, Card, Col, Progress, Row, Space, Tag } from "antd";
 import { Search, ShieldCheck } from "lucide-react";
+import type { ReactNode } from "react";
 import { DataTable } from "@/components/ui/DataTable";
 import { MetricCard } from "@/components/ui/MetricCard";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -33,6 +34,30 @@ function filterButtonHref(base: string, params: Record<string, string | undefine
   });
   const query = search.toString();
   return query ? `${base}?${query}` : base;
+}
+
+function SectionLabel({ children }: { children: ReactNode }) {
+  return <span style={{ fontSize: 13, fontWeight: 700, color: "hsl(var(--text-secondary))" }}>{children}</span>;
+}
+
+function StatBlock({ label, value }: { label: string; value: string | number }) {
+  return (
+    <div
+      style={{
+        borderRadius: 16,
+        border: "1px solid hsl(var(--border-default))",
+        background: "hsl(var(--bg-surface))",
+        padding: "0.95rem 1rem",
+      }}
+    >
+      <div style={{ color: "hsl(var(--text-muted))", fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase" }}>
+        {label}
+      </div>
+      <div style={{ marginTop: 8, color: "hsl(var(--text-primary))", fontSize: 20, fontWeight: 800, lineHeight: 1.1 }}>
+        {value}
+      </div>
+    </div>
+  );
 }
 
 export default async function DteAuditoriaPage({
@@ -144,7 +169,7 @@ export default async function DteAuditoriaPage({
 
       <Row gutter={[16, 16]}>
         <Col xs={24} xl={16}>
-          <Card className="surface-card border-0">
+          <Card className="surface-card border-0" title={<SectionLabel>Registro de auditoria</SectionLabel>}>
             <Space wrap size={10} style={{ width: "100%", marginBottom: 16 }}>
               <Button href="/dte/auditoria" type={!actorTipo && !accion && !tenantId ? "primary" : "default"}>
                 Todo
@@ -183,7 +208,7 @@ export default async function DteAuditoriaPage({
         </Col>
 
         <Col xs={24} xl={8}>
-          <Card className="surface-card border-0" title="Lectura del filtro">
+          <Card className="surface-card border-0" title={<SectionLabel>Lectura del filtro</SectionLabel>}>
             <div className="space-y-4">
               <div>
                 <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
@@ -196,7 +221,7 @@ export default async function DteAuditoriaPage({
               <div
                 style={{
                   padding: "1rem",
-                  borderRadius: "1rem",
+                  borderRadius: 16,
                   background: "hsl(var(--bg-subtle))",
                   border: "1px solid hsl(var(--border-default))",
                   lineHeight: 1.7,
@@ -213,29 +238,10 @@ export default async function DteAuditoriaPage({
                   gap: 12,
                 }}
               >
-                {[
-                  ["Superadmin", superadmins],
-                  ["Sistema", sistema],
-                  ["Tenants", tenants],
-                  ["Pagina", `${audit.page}/${audit.pages}`],
-                ].map(([label, value]) => (
-                  <div
-                    key={label}
-                    style={{
-                      borderRadius: "1rem",
-                      border: "1px solid hsl(var(--border-default))",
-                      background: "hsl(var(--bg-surface))",
-                      padding: "0.9rem",
-                    }}
-                  >
-                    <div style={{ color: "hsl(var(--text-muted))", fontSize: 12, textTransform: "uppercase", letterSpacing: "0.08em" }}>
-                      {label}
-                    </div>
-                    <div style={{ marginTop: 8, color: "hsl(var(--text-primary))", fontSize: 20, fontWeight: 800 }}>
-                      {value}
-                    </div>
-                  </div>
-                ))}
+                <StatBlock label="Superadmin" value={superadmins} />
+                <StatBlock label="Sistema" value={sistema} />
+                <StatBlock label="Tenants" value={tenants} />
+                <StatBlock label="Pagina" value={`${audit.page}/${audit.pages}`} />
               </div>
 
               {audit.total > totalLoaded ? (

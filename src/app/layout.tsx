@@ -3,7 +3,6 @@ import { Manrope, Space_Grotesk } from "next/font/google";
 import { cookies } from "next/headers";
 import "./globals.css";
 import { AntdProvider } from "@/components/providers/AntdProvider";
-import { ThemeHydrator } from "@/components/providers/ThemeHydrator";
 import { AuthProvider } from "@/context/AuthContext";
 import { verifyPanelSessionToken } from "@/lib/panel-session";
 
@@ -35,7 +34,6 @@ export default async function RootLayout({
     <html lang="es" className={`${manrope.variable} ${spaceGrotesk.variable}`}>
       <body>
         <AntdProvider>
-          <ThemeHydrator />
           <AuthProvider initialSession={session}>{children}</AuthProvider>
         </AntdProvider>
       </body>

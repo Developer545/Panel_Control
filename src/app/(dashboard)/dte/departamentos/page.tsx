@@ -1,5 +1,6 @@
 import { Alert, Card, Col, Input, Row, Tag } from "antd";
 import { Building2, Search, ShieldCheck } from "lucide-react";
+import type { ReactNode } from "react";
 import { DataTable } from "@/components/ui/DataTable";
 import { MetricCard } from "@/components/ui/MetricCard";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -20,6 +21,10 @@ async function loadDepartamentos() {
 function readParam(value: string | string[] | undefined) {
   if (Array.isArray(value)) return value[0] ?? "";
   return value ?? "";
+}
+
+function SectionLabel({ children }: { children: ReactNode }) {
+  return <span style={{ fontSize: 13, fontWeight: 700, color: "hsl(var(--text-secondary))" }}>{children}</span>;
 }
 
 export default async function DteDepartamentosPage({
@@ -70,7 +75,7 @@ export default async function DteDepartamentosPage({
 
       <Row gutter={[16, 16]}>
         <Col xs={24} xl={9}>
-          <Card className="surface-card border-0" title="Filtro rapido">
+      <Card className="surface-card border-0" title={<SectionLabel>Filtro rapido</SectionLabel>}>
             <form action="/dte/departamentos" method="get" style={{ display: "grid", gap: 12 }}>
               <Input
                 name="q"
@@ -101,7 +106,7 @@ export default async function DteDepartamentosPage({
         </Col>
 
         <Col xs={24} xl={15}>
-          <Card className="surface-card border-0">
+          <Card className="surface-card border-0" title={<SectionLabel>Catalogo territorial</SectionLabel>}>
             <DataTable
               columns={[
                 { key: "codigo", title: "Codigo" },
