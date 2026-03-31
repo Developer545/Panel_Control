@@ -69,6 +69,7 @@ export default function LoginPage() {
                 try {
                   await login(values);
                   router.replace("/overview");
+                  router.refresh();
                 } catch (cause) {
                   setError(cause instanceof Error ? cause.message : "No se pudo iniciar sesion");
                 }

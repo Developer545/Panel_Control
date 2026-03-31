@@ -17,6 +17,8 @@ const SECTION_META = [
 export function DashboardChrome({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { session } = useAuth();
+  const sessionInitial = session?.username?.slice(0, 1).toUpperCase() ?? "S";
+  const sessionLabel = session?.username ?? "Superadmin";
 
   const active = SECTION_META.find((item) => item.matcher(pathname)) ?? SECTION_META[SECTION_META.length - 1];
 
@@ -50,10 +52,10 @@ export function DashboardChrome({ children }: { children: React.ReactNode }) {
                   color: "hsl(var(--accent-strong))",
                 }}
               >
-                {session?.username.slice(0, 1).toUpperCase()}
+                {sessionInitial}
               </Avatar>
               <div>
-                <Typography.Text strong>{session?.username}</Typography.Text>
+                <Typography.Text strong>{sessionLabel}</Typography.Text>
                 <br />
                 <Typography.Text type="secondary">Superadmin central</Typography.Text>
               </div>
