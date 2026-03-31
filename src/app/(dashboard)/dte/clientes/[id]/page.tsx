@@ -1,22 +1,71 @@
-import { Alert, Button, Tag } from "antd";
-import { DteTenantWorkspace } from "@/components/dte/DteTenantWorkspace";
-import { PageHeader } from "@/components/ui/PageHeader";
-import { getErrorMessage } from "@/lib/error-message";
-import { getDteTenant } from "@/lib/integrations/dte";
+import { Alert, Button, Tag } from \"antd\";
+import { DteTenantWorkspace } from \"@/components/dte/DteTenantWorkspace\";
+import { PageHeader } from \"@/components/ui/PageHeader\";
+import { getErrorMessage } from \"@/lib/error-message\";
+import {
+  getDteTenant,
+  getDteTenantApiMh,
+  getDteTenantDte,
+  getDteTenantEmpresaConfig,
+  getDteTenantFirma,
+  getDteTenantPagos,
+  getDteTenantSucursales,
+  getDteTenantTemaConfig,
+  getDteTenantUsuarios,
+} from \"@/lib/integrations/dte\";
 
-async function loadDteTenant(id: string) {
+function settledValue<T>(result: PromiseSettledResult<T>) {
+  return result.status === \"fulfilled\" ? result.value : null;
+}
+
+async function loadDteTenantWorkspace(id: string) {
   const tenantId = Number(id);
 
   if (!Number.isInteger(tenantId) || tenantId <= 0) {
-    return { error: "El id del tenant no es valido." };
+    return { error: \"El id del tenant no es valido.\" };
   }
 
-  try {
-    const tenant = await getDteTenant(tenantId);
-    return { tenant };
-  } catch (cause) {
-    return { error: getErrorMessage(cause) };
+  const results = await Promise.allSettled([
+    getDteTenant(tenantId),
+    getDteTenantPagos(tenantId),
+    getDteTenantUsuarios(tenantId),
+    getDteTenantDte(tenantId),
+    getDteTenantSucursales(tenantId),
+    getDteTenantApiMh(tenantId),
+    getDteTenantFirma(tenantId),
+    getDteTenantEmpresaConfig(tenantId),
+    getDteTenantTemaConfig(tenantId),
+  ] as const);
+
+  const [tenantResult, pagosResult, usuariosResult, dteResult, sucursalesResult, apiMhResult, firmaResult, empresaConfigResult, temaConfigResult] = results;
+
+  if (tenantResult.status === \"rejected\") {
+    return { error: getErrorMessage(tenantResult.reason) };
   }
+
+  const warnings = [
+    [pagosResult, \"Pagos\"],
+    [usuariosResult, \"Usuarios\"],
+    [dteResult, \"DTE\"],
+    [sucursalesResult, \"Sucursales\"],
+    [apiMhResult, \"API Hacienda\"],
+    [firmaResult, \"Firma\"],
+    [empresaConfigResult, \"Empresa\"],
+    [temaConfigResult, \"Tema\"],
+  ].flatMap(([result, label]) => (result.status === \"rejected\" ? [label] : []));
+
+  return {
+    tenant: tenantResult.value,
+    pagos: settledValue(pagosResult),
+    usuarios: settledValue(usuariosResult),
+    dte: settledValue(dteResult),
+    sucursales: settledValue(sucursalesResult),
+    apiMh: settledValue(apiMhResult),
+    firma: settledValue(firmaResult),
+    empresaConfig: settledValue(empresaConfigResult),
+    temaConfig: settledValue(temaConfigResult),
+    warnings,
+  };
 }
 
 export default async function DteClienteDetallePage({
@@ -25,37 +74,33 @@ export default async function DteClienteDetallePage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const result = await loadDteTenant(id);
+  const result = await loadDteTenantWorkspace(id);
 
-  if ("error" in result) {
+  if (\"error\" in result) {
     return (
-      <div className="space-y-6">
-        <PageHeader eyebrow="DTE" title="Detalle DTE" description={`No se pudo abrir el tenant ${id}.`} />
-        <Alert type="error" showIcon message="Fallo la integracion" description={result.error} />
-      </div>
-    );
+      <div className=\"space-y-6\">\n        <PageHeader eyebrow=\"DTE\" title=\"Detalle DTE\" description={`No se pudo abrir el tenant ${id}.`} />\n        <Alert type=\"error\" showIcon message=\"Fallo la integracion\" description={result.error} />\n      </div>\n    );
   }
 
-  const { tenant } = result;
+  const { tenant, warnings, ...workspaceData } = result;
 
   return (
-    <div className="space-y-6">
+    <div className=\"space-y-6\">
       <PageHeader
-        eyebrow="DTE"
+        eyebrow=\"DTE\"
         title={tenant.nombre}
-        description="Workspace profundo del tenant DTE con cuenta, empresa, pagos, usuarios, DTE, sucursales, API Hacienda y firma."
+        description=\"Workspace profundo del tenant DTE con cuenta, empresa, pagos, usuarios, DTE, sucursales, API Hacienda y firma.\"
         actions={
           <>
-            <Tag bordered={false} style={{ margin: 0, borderRadius: 999, background: "hsl(var(--bg-subtle))", color: "hsl(var(--text-secondary))" }}>
+            <Tag bordered={false} style={{ margin: 0, borderRadius: 999, background: \"hsl(var(--bg-subtle))\", color: \"hsl(var(--text-secondary))\" }}>
               Solo lectura
             </Tag>
-            <Button href="/dte/clientes" type="default">
+            <Button href=\"/dte/clientes\" type=\"default\">
               Volver a clientes
             </Button>
           </>
         }
       />
-      <DteTenantWorkspace tenant={tenant} />
+      <DteTenantWorkspace tenant={tenant} warnings={warnings} {...workspaceData} />
     </div>
   );
 }

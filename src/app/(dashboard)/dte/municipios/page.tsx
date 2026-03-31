@@ -31,8 +31,13 @@ function buildHref(departamentoId: number | "all", search: string) {
   return query ? `/dte/municipios?${query}` : "/dte/municipios";
 }
 
-export default async function DteMunicipiosPage({ searchParams }: { searchParams?: SearchParams }) {
-  const departamentoIdRaw = readParam(searchParams?.departamento_id);
+export default async function DteMunicipiosPage({
+  searchParams,
+}: {
+  searchParams?: Promise<SearchParams>;
+}) {
+  const params = (await searchParams) ?? {};
+  const departamentoIdRaw = readParam(params.departamento_id);
   const departamentoId = departamentoIdRaw && departamentoIdRaw !== "all" ? Number(departamentoIdRaw) : undefined;
   const result = await loadMunicipios(departamentoId);
 
@@ -45,7 +50,7 @@ export default async function DteMunicipiosPage({ searchParams }: { searchParams
     );
   }
 
-  const query = readParam(searchParams?.q).trim().toLowerCase();
+  const query = readParam(params.q).trim().toLowerCase();
   const departamentos = result.departamentos;
   const municipios = result.municipios.filter((item) => {
     const dep = item.departamento_nombre ?? departamentos.find((row) => row.id === item.departamento_id)?.nombre ?? "";
@@ -82,7 +87,7 @@ export default async function DteMunicipiosPage({ searchParams }: { searchParams
                 allowClear
                 prefix={<Search size={16} />}
                 placeholder="Buscar municipio o departamento"
-                defaultValue={readParam(searchParams?.q)}
+                defaultValue={readParam(params.q)}
                 name="q"
               />
               <input type="hidden" name="departamento_id" value={departamentoIdRaw || "all"} />
@@ -91,13 +96,13 @@ export default async function DteMunicipiosPage({ searchParams }: { searchParams
               </Button>
 
               <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                <Link href={buildHref("all", readParam(searchParams?.q))} style={{ textDecoration: "none" }}>
+                <Link href={buildHref("all", readParam(params.q))} style={{ textDecoration: "none" }}>
                   <Tag bordered={false} style={{ margin: 0, borderRadius: 999, background: !departamentoId ? "hsl(var(--section-dte))" : "hsl(var(--bg-subtle))", color: !departamentoId ? "hsl(var(--text-inverse))" : "hsl(var(--text-secondary))", fontWeight: 700 }}>
                     Todos
                   </Tag>
                 </Link>
                 {departamentos.map((item) => (
-                  <Link key={item.id} href={buildHref(item.id, readParam(searchParams?.q))} style={{ textDecoration: "none" }}>
+                  <Link key={item.id} href={buildHref(item.id, readParam(params.q))} style={{ textDecoration: "none" }}>
                     <Tag bordered={false} style={{ margin: 0, borderRadius: 999, background: departamentoId === item.id ? "hsl(var(--section-dte))" : "hsl(var(--bg-subtle))", color: departamentoId === item.id ? "hsl(var(--text-inverse))" : "hsl(var(--text-secondary))", fontWeight: 700 }}>
                       {item.nombre}
                     </Tag>

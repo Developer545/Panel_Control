@@ -412,11 +412,16 @@ async function getDteAuthHeaders(): Promise<DteAuthHeaders> {
   };
 }
 
-async function dteFetch<T>(path: string): Promise<T> {
+async function dteRequest<T>(path: string, options?: RequestInit): Promise<T> {
   const auth = await getDteAuthHeaders();
   return fetchJson<T>(`${getBaseUrl()}/superadmin${path}`, {
+    ...options,
     headers: auth.headers,
   });
+}
+
+async function dteFetch<T>(path: string): Promise<T> {
+  return dteRequest<T>(path);
 }
 
 function buildQuery(params?: Record<string, string | number | undefined>) {
@@ -487,6 +492,12 @@ export async function getDteAnalytics() {
 
 export async function getDteBackups() {
   return dteFetch<DteBackupListResponse>("/system/backups");
+}
+
+export async function runDteBackup() {
+  return dteRequest<{ message: string }>("/system/backups/run", {
+    method: "POST",
+  });
 }
 
 export async function getDteTenantPagos(id: number) {

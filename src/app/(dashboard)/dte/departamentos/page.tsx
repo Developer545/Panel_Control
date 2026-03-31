@@ -22,8 +22,13 @@ function readParam(value: string | string[] | undefined) {
   return value ?? "";
 }
 
-export default async function DteDepartamentosPage({ searchParams }: { searchParams?: SearchParams }) {
+export default async function DteDepartamentosPage({
+  searchParams,
+}: {
+  searchParams?: Promise<SearchParams>;
+}) {
   const result = await loadDepartamentos();
+  const params = (await searchParams) ?? {};
 
   if ("error" in result) {
     return (
@@ -34,7 +39,7 @@ export default async function DteDepartamentosPage({ searchParams }: { searchPar
     );
   }
 
-  const query = readParam(searchParams?.q).trim().toLowerCase();
+  const query = readParam(params.q).trim().toLowerCase();
   const departamentos = result.departamentos.filter((item) => !query || item.codigo.toLowerCase().includes(query) || item.nombre.toLowerCase().includes(query));
   const firstCode = result.departamentos[0]?.codigo ?? "-";
   const lastCode = result.departamentos.at(-1)?.codigo ?? "-";
@@ -69,7 +74,7 @@ export default async function DteDepartamentosPage({ searchParams }: { searchPar
             <form action="/dte/departamentos" method="get" style={{ display: "grid", gap: 12 }}>
               <Input
                 name="q"
-                defaultValue={readParam(searchParams?.q)}
+                defaultValue={readParam(params.q)}
                 allowClear
                 prefix={<Search size={16} />}
                 placeholder="Buscar departamento o codigo"
@@ -111,7 +116,7 @@ export default async function DteDepartamentosPage({ searchParams }: { searchPar
                   item.nombre,
                 ],
               }))}
-              caption={query ? `Resultados para "${readParam(searchParams?.q)}"` : "Catalogo territorial"}
+              caption={query ? `Resultados para "${readParam(params.q)}"` : "Catalogo territorial"}
               emptyState="No hay departamentos para mostrar."
             />
           </Card>
