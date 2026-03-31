@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { Alert, Card, Col, Descriptions, Row, Table, Tag, Typography } from "antd";
-import type { ColumnsType } from "antd/es/table";
+import { Alert, Card, Col, Descriptions, Row, Table, Tag } from "antd";
+import type { TableColumnsType } from "antd";
 import {
   Activity,
   BarChart3,
@@ -18,8 +18,6 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { getErrorMessage } from "@/lib/error-message";
 import { formatCurrency, formatDateOnly, formatNumber } from "@/lib/formatters";
 import { getDteDashboard, getDteHealthDetail } from "@/lib/integrations/dte";
-
-const { Text } = Typography;
 
 const QUICK_LINKS = [
   { href: "/dte/clientes", label: "Clientes", helper: "Listado maestro y detalle operativo", icon: Users },
@@ -102,12 +100,11 @@ function QuickAccessGrid() {
                   >
                     {item.label}
                   </div>
-                  <Text
-                    type="secondary"
-                    style={{ fontSize: 11, lineHeight: 1.35, display: "block", marginTop: 2 }}
+                  <span
+                    style={{ fontSize: 11, lineHeight: 1.35, display: "block", marginTop: 2, color: "hsl(var(--text-muted))" }}
                   >
                     {item.helper}
-                  </Text>
+                  </span>
                 </div>
               </Card>
             </Link>
@@ -126,7 +123,7 @@ type AlertRow = {
   tipo: "Por vencer" | "Vencido";
 };
 
-const ALERT_COLUMNS: ColumnsType<AlertRow> = [
+const ALERT_COLUMNS: TableColumnsType<AlertRow> = [
   {
     title: "Tenant",
     dataIndex: "nombre",
