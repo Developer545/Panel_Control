@@ -1,4 +1,5 @@
-import { Card, Statistic, Tag } from "antd";
+import type { ReactNode } from "react";
+import { Card, Statistic } from "antd";
 
 export function MetricCard({
   title,
@@ -6,53 +7,75 @@ export function MetricCard({
   accentVar,
   suffix,
   hint,
+  icon,
 }: {
   title: string;
   value: number | string;
   accentVar: string;
   suffix?: string;
   hint?: string;
+  icon?: ReactNode;
 }) {
   const isNumericValue = typeof value === "number";
 
   return (
     <Card
       className="surface-card border-0 h-full"
+      size="small"
+      style={{ borderTop: `3px solid hsl(var(${accentVar}))` }}
       styles={{
         body: {
           display: "flex",
           minHeight: "100%",
           flexDirection: "column",
-          gap: "1rem",
-          padding: "1.35rem 1.4rem",
+          gap: "0.7rem",
+          padding: "1rem 1rem 0.95rem",
         },
       }}
     >
       <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "0.75rem" }}>
-        <Tag
-          bordered={false}
-          style={{
-            margin: 0,
-            background: `hsl(var(${accentVar}) / 0.14)`,
-            color: `hsl(var(${accentVar}))`,
-            fontWeight: 700,
-            letterSpacing: "0.08em",
-            textTransform: "uppercase",
-          }}
-        >
-          {title}
-        </Tag>
-        {hint ? (
-          <span
+        <div style={{ minWidth: 0 }}>
+          <div
             style={{
-              textAlign: "right",
-              fontSize: "0.82rem",
-              lineHeight: 1.4,
-              color: "hsl(var(--text-muted))",
+              color: "hsl(var(--text-secondary))",
+              fontSize: "0.76rem",
+              fontWeight: 700,
+              letterSpacing: "0.12em",
+              textTransform: "uppercase",
+              lineHeight: 1.35,
             }}
           >
-            {hint}
-          </span>
+            {title}
+          </div>
+          {hint ? (
+            <div
+              style={{
+                marginTop: "0.4rem",
+                fontSize: "0.82rem",
+                lineHeight: 1.45,
+                color: "hsl(var(--text-muted))",
+              }}
+            >
+              {hint}
+            </div>
+          ) : null}
+        </div>
+        {icon ? (
+          <div
+            style={{
+              color: `hsl(var(${accentVar}))`,
+              flexShrink: 0,
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: "2rem",
+              height: "2rem",
+              borderRadius: "0.7rem",
+              background: `hsl(var(${accentVar}) / 0.1)`,
+            }}
+          >
+            {icon}
+          </div>
         ) : null}
       </div>
 
@@ -62,8 +85,7 @@ export function MetricCard({
           suffix={suffix}
           valueStyle={{
             color: `hsl(var(${accentVar}))`,
-            fontFamily: "var(--font-display)",
-            fontSize: "2.15rem",
+            fontSize: "1.95rem",
             lineHeight: 1,
             letterSpacing: "-0.04em",
           }}
@@ -73,7 +95,7 @@ export function MetricCard({
           style={{
             color: `hsl(var(${accentVar}))`,
             fontFamily: "var(--font-display)",
-            fontSize: "1.55rem",
+            fontSize: "1.5rem",
             lineHeight: 1.1,
             letterSpacing: "-0.03em",
             fontWeight: 700,

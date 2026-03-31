@@ -11,28 +11,33 @@
   --raw-ink-300: 216 24% 87%;
   --raw-ink-200: 214 32% 93%;
   --raw-ink-100: 210 33% 97%;
+  --raw-shell-950: 271 29% 18%;
+  --raw-shell-900: 271 26% 22%;
+  --raw-shell-800: 270 22% 30%;
+  --raw-page: 258 45% 97%;
+  --raw-page-soft: 258 42% 98%;
 
-  --raw-primary: 195 85% 41%;
-  --raw-primary-strong: 196 88% 32%;
-  --raw-primary-soft: 193 82% 96%;
-  --raw-overview: 223 73% 56%;
-  --raw-dte: 191 87% 38%;
-  --raw-barber: 151 57% 36%;
-  --raw-erp: 24 88% 52%;
+  --raw-primary: 267 74% 63%;
+  --raw-primary-strong: 267 70% 56%;
+  --raw-primary-soft: 266 100% 97%;
+  --raw-overview: 267 74% 63%;
+  --raw-dte: 194 84% 43%;
+  --raw-barber: 149 63% 42%;
+  --raw-erp: 24 88% 54%;
   --raw-success: 147 58% 36%;
   --raw-warning: 34 91% 47%;
   --raw-danger: 0 76% 56%;
 
-  --bg-app: var(--raw-ink-100);
-  --bg-page: var(--raw-ink-100);
+  --bg-app: var(--raw-page);
+  --bg-page: var(--raw-page);
   --bg-surface: var(--raw-white);
-  --bg-surface-muted: var(--raw-ink-100);
+  --bg-surface-muted: var(--raw-page-soft);
   --bg-surface-strong: var(--raw-white);
   --bg-surface-raised: var(--raw-white);
-  --bg-subtle: var(--raw-ink-100);
-  --bg-sidebar: var(--raw-ink-950);
-  --bg-sidebar-elevated: var(--raw-ink-900);
-  --bg-inverse: var(--raw-ink-950);
+  --bg-subtle: var(--raw-page-soft);
+  --bg-sidebar: var(--raw-shell-950);
+  --bg-sidebar-elevated: var(--raw-shell-900);
+  --bg-inverse: var(--raw-shell-950);
   --bg-accent-soft: var(--raw-primary-soft);
 
   --text-primary: var(--raw-ink-950);
@@ -47,6 +52,7 @@
   --accent-strong: var(--raw-primary-strong);
   --accent-soft: var(--raw-primary-soft);
   --brand-primary: var(--raw-primary);
+  --brand-primary-dark: var(--raw-primary-strong);
   --brand-secondary: var(--raw-overview);
 
   --section-overview: var(--raw-overview);
@@ -65,18 +71,22 @@
   --status-error-bg: 0 100% 95%;
 
   --radius-xs: 8px;
-  --radius-sm: 12px;
-  --radius-md: 18px;
-  --radius-lg: 28px;
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 22px;
 
   --sidebar-fg: 0 0% 96%;
-  --sidebar-muted: 216 22% 74%;
+  --sidebar-muted: 254 20% 78%;
+  --sidebar-border: 270 21% 31%;
+  --sidebar-hover-bg: 0 0% 100% / 0.06;
+  --sidebar-active-bg: 0 0% 100% / 0.1;
+  --sidebar-active-fg: 0 0% 100%;
   --shadow-color: var(--raw-black);
-  --shadow-sm: 0 12px 28px -24px hsl(var(--raw-black) / 0.16);
-  --shadow-soft: 0 18px 60px -35px hsl(var(--raw-black) / 0.22);
-  --shadow-card: 0 18px 34px -30px hsl(var(--raw-black) / 0.18);
-  --shadow-lg: 0 26px 52px -34px hsl(var(--raw-black) / 0.2);
-  --shadow-xl: 0 34px 80px -42px hsl(var(--raw-black) / 0.28);
+  --shadow-sm: 0 12px 28px -24px hsl(var(--raw-black) / 0.12);
+  --shadow-soft: 0 24px 64px -38px hsl(var(--raw-shell-950) / 0.24);
+  --shadow-card: 0 18px 36px -30px hsl(var(--raw-ink-950) / 0.12);
+  --shadow-lg: 0 26px 52px -34px hsl(var(--raw-shell-950) / 0.18);
+  --shadow-xl: 0 34px 80px -42px hsl(var(--raw-shell-950) / 0.24);
 
   --font-sans: var(--font-manrope), "Segoe UI", sans-serif;
   --font-display: var(--font-space-grotesk), var(--font-manrope), sans-serif;
@@ -122,10 +132,7 @@ html,
 body {
   margin: 0;
   min-height: 100%;
-  background:
-    radial-gradient(circle at top left, hsl(var(--accent-soft)) 0, transparent 26%),
-    radial-gradient(circle at top right, hsl(var(--section-overview) / 0.08) 0, transparent 18%),
-    linear-gradient(180deg, hsl(var(--bg-app)) 0%, hsl(var(--bg-surface-muted)) 100%);
+  background: hsl(var(--bg-page));
   color: hsl(var(--text-primary));
   font-family: var(--font-sans);
 }
@@ -141,9 +148,9 @@ body::before {
   inset: 0;
   pointer-events: none;
   background:
-    linear-gradient(90deg, hsl(var(--raw-white) / 0.36) 0, transparent 22%),
-    linear-gradient(180deg, transparent 0, hsl(var(--raw-white) / 0.18) 100%);
-  opacity: 0.55;
+    radial-gradient(circle at top left, hsl(var(--accent-soft) / 0.95) 0, transparent 24%),
+    radial-gradient(circle at bottom right, hsl(var(--section-barber) / 0.06) 0, transparent 18%);
+  opacity: 0.9;
 }
 
 a {
@@ -174,12 +181,10 @@ select {
 }
 
 .surface-card {
-  background:
-    linear-gradient(180deg, hsl(var(--bg-surface-strong) / 0.96) 0%, hsl(var(--bg-surface) / 0.88) 100%);
+  background: hsl(var(--bg-surface));
   border: 1px solid hsl(var(--border-default));
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-card);
-  backdrop-filter: blur(18px);
 }
 
 .section-badge {
@@ -208,7 +213,7 @@ select {
 }
 
 .ant-card {
-  background: hsl(var(--bg-surface) / 0.94);
+  background: hsl(var(--bg-surface));
   border-color: hsl(var(--border-default)) !important;
 }
 
@@ -228,16 +233,22 @@ select {
 .ant-btn-primary {
   border-color: transparent !important;
   background:
-    linear-gradient(135deg, hsl(var(--accent)) 0%, hsl(var(--section-overview)) 100%) !important;
+    linear-gradient(180deg, hsl(var(--bg-sidebar-elevated)) 0%, hsl(var(--bg-inverse)) 100%) !important;
 }
 
 .ant-btn-primary:hover,
 .ant-btn-primary:focus-visible {
-  opacity: 0.96;
+  opacity: 0.94;
 }
 
 .ant-btn-default {
   background: hsl(var(--bg-surface)) !important;
+}
+
+.ant-btn-default:hover,
+.ant-btn-default:focus-visible {
+  border-color: hsl(var(--accent) / 0.3) !important;
+  color: hsl(var(--text-primary)) !important;
 }
 
 .ant-input-outlined,
