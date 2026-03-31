@@ -3,6 +3,7 @@ import { Alert, Card, Tag } from "antd";
 import { DataTable } from "@/components/ui/DataTable";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { BarberTenantsSearch } from "@/components/barber/BarberTenantsSearch";
+import { NewBarberTenantDrawer } from "@/components/barber/NewBarberTenantDrawer";
 import { getErrorMessage } from "@/lib/error-message";
 import { formatDateOnly } from "@/lib/formatters";
 import { getBarberTenants } from "@/lib/integrations/barber";
@@ -36,7 +37,12 @@ export default async function BarberTenantsPage({
 
   return (
     <div className="space-y-6">
-      <PageHeader eyebrow="Barber" title="Tenants Barber Pro" description="Listado centralizado de barberias conectadas a Barber Pro." />
+      <PageHeader
+        eyebrow="Barber"
+        title="Tenants Barber Pro"
+        description="Listado centralizado de barberias conectadas a Barber Pro."
+        actions={<NewBarberTenantDrawer />}
+      />
       <Card className="surface-card border-0">
         <div style={{ marginBottom: 16 }}>
           <BarberTenantsSearch initialSearch={search} />
