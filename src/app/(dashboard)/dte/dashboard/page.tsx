@@ -136,7 +136,7 @@ const ALERT_COLUMNS: TableColumnsType<AlertRow> = [
   {
     title: "Plan",
     dataIndex: "plan_nombre",
-    render: (v: string | null) => v ?? <Text type="secondary">Sin plan</Text>,
+    render: (v: string | null) => v ?? <span style={{ color: "hsl(var(--text-muted))" }}>Sin plan</span>,
   },
   {
     title: "Estado",
