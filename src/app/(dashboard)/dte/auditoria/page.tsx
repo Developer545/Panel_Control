@@ -1,0 +1,255 @@
+import { Alert, Button, Card, Col, Progress, Row, Space, Tag } from "antd";
+import { Search, ShieldCheck } from "lucide-react";
+import { DataTable } from "@/components/ui/DataTable";
+import { MetricCard } from "@/components/ui/MetricCard";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { formatDate } from "@/lib/formatters";
+import { getErrorMessage } from "@/lib/error-message";
+import { getDteAudit, type DteAuditFilters } from "@/lib/integrations/dte";
+
+function toSingle(value: string | string[] | undefined) {
+  return Array.isArray(value) ? value[0] : value;
+}
+
+function toInt(value: string | undefined) {
+  if (!value) return undefined;
+  const parsed = Number.parseInt(value, 10);
+  return Number.isFinite(parsed) ? parsed : undefined;
+}
+
+async function loadAudit(filters: DteAuditFilters) {
+  try {
+    const audit = await getDteAudit(filters);
+    return { audit };
+  } catch (cause) {
+    return { error: getErrorMessage(cause) };
+  }
+}
+
+function filterButtonHref(base: string, params: Record<string, string | undefined>) {
+  const search = new URLSearchParams();
+  Object.entries(params).forEach(([key, value]) => {
+    if (value) search.set(key, value);
+  });
+  const query = search.toString();
+  return query ? `${base}?${query}` : base;
+}
+
+export default async function DteAuditoriaPage({
+  searchParams,
+}: {
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const params = (await searchParams) ?? {};
+  const actorTipo = toSingle(params.actor_tipo);
+  const accion = toSingle(params.accion);
+  const tenantId = toInt(toSingle(params.tenant_id));
+  const page = toInt(toSingle(params.page)) ?? 1;
+  const limit = Math.min(Math.max(toInt(toSingle(params.limit)) ?? 100, 10), 200);
+
+  const filters: DteAuditFilters = {
+    page,
+    limit,
+    actor_tipo: actorTipo === "superadmin" || actorTipo === "sistema" ? actorTipo : undefined,
+    accion: accion || undefined,
+    tenant_id: tenantId,
+  };
+
+  const result = await loadAudit(filters);
+
+  if ("error" in result) {
+    return (
+      <div className="space-y-6">
+        <PageHeader eyebrow="DTE" title="Auditoria" description="Visor de actividad del superadmin con filtros rapidos." />
+        <Alert type="error" showIcon message="No se pudo cargar la auditoria" description={result.error} />
+      </div>
+    );
+  }
+
+  const { audit } = result;
+  const totalLoaded = audit.items.length;
+  const superadmins = audit.items.filter((item) => item.actor_tipo === "superadmin").length;
+  const sistema = audit.items.filter((item) => item.actor_tipo === "sistema").length;
+  const tenants = new Set(audit.items.map((item) => item.tenant_slug).filter(Boolean)).size;
+  const visiblePercent = audit.total > 0 ? Math.round((totalLoaded / audit.total) * 100) : 0;
+
+  const rows = audit.items.map((item) => ({
+    key: String(item.id),
+    cells: [
+      formatDate(item.created_at),
+      <div key={`actor-${item.id}`}>
+        <div style={{ fontWeight: 700, color: "hsl(var(--text-primary))" }}>{item.actor_nombre ?? item.actor_username ?? "Sistema"}</div>
+        <div style={{ color: "hsl(var(--text-muted))", fontSize: 12 }}>{item.actor_username ?? "system"}</div>
+      </div>,
+      <Tag
+        key={`action-${item.id}`}
+        bordered={false}
+        style={{ margin: 0, borderRadius: 999, background: "hsl(var(--bg-subtle))", fontWeight: 700 }}
+      >
+        {item.accion}
+      </Tag>,
+      item.tenant_nombre ?? <span style={{ color: "hsl(var(--text-muted))" }}>Sin tenant</span>,
+      item.ip ?? "Sin IP",
+      <pre
+        key={`detail-${item.id}`}
+        style={{
+          margin: 0,
+          whiteSpace: "pre-wrap",
+          fontFamily: "var(--font-mono, ui-monospace, SFMono-Regular, monospace)",
+          color: "hsl(var(--text-muted))",
+          fontSize: 12,
+        }}
+      >
+        {JSON.stringify(item.detalle ?? {}, null, 2)}
+      </pre>,
+    ],
+  }));
+
+  return (
+    <div className="space-y-6">
+      <PageHeader
+        eyebrow="DTE"
+        title="Auditoria"
+        description="Actividad del superadmin, cambios de tenant y eventos del sistema en una sola lectura."
+        actions={
+          <Tag
+            bordered={false}
+            style={{
+              margin: 0,
+              borderRadius: 999,
+              background: "hsl(var(--status-success-bg))",
+              color: "hsl(var(--status-success))",
+              fontWeight: 700,
+            }}
+          >
+            {audit.total} eventos
+          </Tag>
+        }
+      />
+
+      <Row gutter={[16, 16]}>
+        <Col xs={24} sm={12} xl={6}>
+          <MetricCard title="Eventos" value={audit.total} accentVar="--section-dte" icon={<ShieldCheck size={18} />} />
+        </Col>
+        <Col xs={24} sm={12} xl={6}>
+          <MetricCard title="Cargados" value={totalLoaded} accentVar="--section-dte" icon={<Search size={18} />} />
+        </Col>
+        <Col xs={24} sm={12} xl={6}>
+          <MetricCard title="Superadmin" value={superadmins} accentVar="--section-dte" icon={<ShieldCheck size={18} />} />
+        </Col>
+        <Col xs={24} sm={12} xl={6}>
+          <MetricCard title="Tenants tocados" value={tenants} accentVar="--section-dte" icon={<ShieldCheck size={18} />} />
+        </Col>
+      </Row>
+
+      <Row gutter={[16, 16]}>
+        <Col xs={24} xl={16}>
+          <Card className="surface-card border-0">
+            <Space wrap size={10} style={{ width: "100%", marginBottom: 16 }}>
+              <Button href="/dte/auditoria" type={!actorTipo && !accion && !tenantId ? "primary" : "default"}>
+                Todo
+              </Button>
+              <Button href={filterButtonHref("/dte/auditoria", { actor_tipo: "superadmin", accion, tenant_id: tenantId?.toString() })} type={actorTipo === "superadmin" ? "primary" : "default"}>
+                Superadmin
+              </Button>
+              <Button href={filterButtonHref("/dte/auditoria", { actor_tipo: "sistema", accion, tenant_id: tenantId?.toString() })} type={actorTipo === "sistema" ? "primary" : "default"}>
+                Sistema
+              </Button>
+              <Button href={filterButtonHref("/dte/auditoria", { actor_tipo: actorTipo, accion: "tenant", tenant_id: tenantId?.toString() })}>
+                Tenant
+              </Button>
+              <Button href={filterButtonHref("/dte/auditoria", { actor_tipo: actorTipo, accion: "plan", tenant_id: tenantId?.toString() })}>
+                Plan
+              </Button>
+              <Button href={filterButtonHref("/dte/auditoria", { actor_tipo: actorTipo, accion: "backup", tenant_id: tenantId?.toString() })}>
+                Backup
+              </Button>
+            </Space>
+
+            <DataTable
+              caption="Registro de auditoria"
+              columns={[
+                { key: "fecha", title: "Fecha" },
+                { key: "actor", title: "Actor" },
+                { key: "accion", title: "Accion" },
+                { key: "tenant", title: "Tenant" },
+                { key: "ip", title: "IP" },
+                { key: "detalle", title: "Detalle" },
+              ]}
+              rows={rows}
+              emptyState="No hay eventos para este filtro."
+            />
+          </Card>
+        </Col>
+
+        <Col xs={24} xl={8}>
+          <Card className="surface-card border-0" title="Lectura del filtro">
+            <div className="space-y-4">
+              <div>
+                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
+                  <span style={{ color: "hsl(var(--text-secondary))", fontWeight: 600 }}>Cobertura</span>
+                  <span style={{ color: "hsl(var(--text-primary))", fontWeight: 700 }}>{visiblePercent}%</span>
+                </div>
+                <Progress percent={visiblePercent} strokeColor="hsl(var(--section-dte))" showInfo={false} />
+              </div>
+
+              <div
+                style={{
+                  padding: "1rem",
+                  borderRadius: "1rem",
+                  background: "hsl(var(--bg-subtle))",
+                  border: "1px solid hsl(var(--border-default))",
+                  lineHeight: 1.7,
+                  color: "hsl(var(--text-muted))",
+                }}
+              >
+                Esta vista reemplaza el log de ejemplo por el feed real del backend. Desde aqui se puede acotar por tipo de actor o por familia de accion sin salir del panel central.
+              </div>
+
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+                  gap: 12,
+                }}
+              >
+                {[
+                  ["Superadmin", superadmins],
+                  ["Sistema", sistema],
+                  ["Tenants", tenants],
+                  ["Pagina", `${audit.page}/${audit.pages}`],
+                ].map(([label, value]) => (
+                  <div
+                    key={label}
+                    style={{
+                      borderRadius: "1rem",
+                      border: "1px solid hsl(var(--border-default))",
+                      background: "hsl(var(--bg-surface))",
+                      padding: "0.9rem",
+                    }}
+                  >
+                    <div style={{ color: "hsl(var(--text-muted))", fontSize: 12, textTransform: "uppercase", letterSpacing: "0.08em" }}>
+                      {label}
+                    </div>
+                    <div style={{ marginTop: 8, color: "hsl(var(--text-primary))", fontSize: 20, fontWeight: 800 }}>
+                      {value}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {audit.total > totalLoaded ? (
+                <Alert
+                  type="info"
+                  showIcon
+                  message="Vista paginada"
+                  description={`Mostrando ${totalLoaded} de ${audit.total} eventos. Ajusta limit o pagina desde la query si necesitas mas contexto.`}
+                />
+              ) : null}
+            </div>
+          </Card>
+        </Col>
+      </Row>
+    </div>
+  );
+}

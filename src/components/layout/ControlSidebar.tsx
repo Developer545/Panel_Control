@@ -11,6 +11,8 @@ import {
   ChevronLeft,
   ChevronRight,
   CreditCard,
+  Database,
+  MapPinned,
   FileText,
   LayoutDashboard,
   LogOut,
@@ -18,6 +20,7 @@ import {
   ShieldCheck,
   Store,
   Users,
+  BarChart3,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 
@@ -48,7 +51,7 @@ const NAV_GROUPS: NavGroup[] = [
     ],
   },
   {
-    title: "DTE",
+    title: "DTE Operacion",
     items: [
       {
         key: "/dte/dashboard",
@@ -72,6 +75,63 @@ const NAV_GROUPS: NavGroup[] = [
         key: "/dte/health",
         label: "Health",
         icon: <Activity size={18} />,
+        colorVar: "--section-dte",
+      },
+    ],
+  },
+  {
+    title: "DTE Gobierno",
+    items: [
+      {
+        key: "/dte/auditoria",
+        label: "Auditoria",
+        icon: <ShieldCheck size={18} />,
+        colorVar: "--section-dte",
+      },
+      {
+        key: "/dte/analytics",
+        label: "Analytics",
+        icon: <BarChart3 size={18} />,
+        colorVar: "--section-dte",
+      },
+      {
+        key: "/dte/mapa",
+        label: "Mapa",
+        icon: <MapPinned size={18} />,
+        colorVar: "--section-dte",
+      },
+      {
+        key: "/dte/backups",
+        label: "Backups",
+        icon: <Database size={18} />,
+        colorVar: "--section-dte",
+      },
+    ],
+  },
+  {
+    title: "DTE Catalogos",
+    items: [
+      {
+        key: "/dte/departamentos",
+        label: "Departamentos",
+        icon: <Building2 size={18} />,
+        colorVar: "--section-dte",
+      },
+      {
+        key: "/dte/municipios",
+        label: "Municipios",
+        icon: <Building2 size={18} />,
+        colorVar: "--section-dte",
+      },
+    ],
+  },
+  {
+    title: "DTE Sistema",
+    items: [
+      {
+        key: "/dte/tema",
+        label: "Tema",
+        icon: <ShieldCheck size={18} />,
         colorVar: "--section-dte",
       },
     ],
