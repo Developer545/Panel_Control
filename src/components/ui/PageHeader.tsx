@@ -1,7 +1,5 @@
 import type { ReactNode } from "react";
-import { Space, Tag, Typography } from "antd";
-
-const { Title, Text } = Typography;
+import { Tag } from "antd";
 
 export function PageHeader({
   eyebrow,
@@ -44,30 +42,35 @@ export function PageHeader({
           {eyebrow}
         </Tag>
 
-        <Title
-          level={2}
+        <h2
           style={{
             margin: "0.85rem 0 0.35rem",
+            fontFamily: "var(--font-display)",
             fontSize: "clamp(1.65rem, 2.6vw, 2.2rem)",
             lineHeight: 1.05,
             letterSpacing: "-0.03em",
+            color: "hsl(var(--text-primary))",
           }}
         >
           {title}
-        </Title>
+        </h2>
 
-        <Text
-          type="secondary"
-          style={{ lineHeight: 1.6, maxWidth: 760, display: "block" }}
+        <p
+          style={{
+            margin: 0,
+            lineHeight: 1.6,
+            maxWidth: 760,
+            color: "hsl(var(--text-muted))",
+          }}
         >
           {description}
-        </Text>
+        </p>
       </div>
 
       {actions && (
-        <Space wrap size={8} style={{ justifyContent: "flex-end" }}>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", justifyContent: "flex-end" }}>
           {actions}
-        </Space>
+        </div>
       )}
     </div>
   );
