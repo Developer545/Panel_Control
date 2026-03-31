@@ -1,9 +1,20 @@
 import type { Metadata } from "next";
+import { Manrope, Space_Grotesk } from "next/font/google";
 import { cookies } from "next/headers";
 import "./globals.css";
 import { AntdProvider } from "@/components/providers/AntdProvider";
 import { AuthProvider } from "@/context/AuthContext";
 import { verifyPanelSessionToken } from "@/lib/panel-session";
+
+const manrope = Manrope({
+  subsets: ["latin"],
+  variable: "--font-manrope",
+});
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin"],
+  variable: "--font-space-grotesk",
+});
 
 export const metadata: Metadata = {
   title: "Speeddan Control V3",
@@ -20,7 +31,7 @@ export default async function RootLayout({
   const session = sessionToken ? verifyPanelSessionToken(sessionToken) : null;
 
   return (
-    <html lang="es">
+    <html lang="es" className={`${manrope.variable} ${spaceGrotesk.variable}`}>
       <body>
         <AntdProvider>
           <AuthProvider initialSession={session}>{children}</AuthProvider>
