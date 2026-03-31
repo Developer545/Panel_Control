@@ -267,139 +267,24 @@ export default async function OverviewV2() {
 
   return (
     <div className="space-y-4">
-      <Card
-        className="surface-card border-0"
-        styles={{
-          body: {
-            display: "grid",
-            gap: 12,
-            padding: 14,
-          },
-        }}
-      >
-        <div
-          style={{
-            display: "grid",
-            gap: 12,
-            gridTemplateColumns: "minmax(0, 1.25fr) minmax(280px, 0.75fr)",
-            alignItems: "stretch",
-          }}
-        >
-          <div style={{ display: "grid", gap: 10 }}>
-            <Tag
-              bordered={false}
-              style={{
-                margin: 0,
-                width: "fit-content",
-                borderRadius: 999,
-                paddingInline: "0.75rem",
-                background: "hsl(var(--section-overview) / 0.12)",
-                color: "hsl(var(--section-overview))",
-                fontWeight: 700,
-              }}
-            >
-              Vista global
-            </Tag>
-
-            <div style={{ display: "grid", gap: 8 }}>
-              <h1
-                style={{
-                  margin: 0,
-                  color: "hsl(var(--text-primary))",
-                  fontSize: "clamp(1.5rem, 2.4vw, 1.95rem)",
-                  lineHeight: 1.08,
-                  letterSpacing: "-0.03em",
-                }}
-              >
-                Tablero compacto para leer DTE, Barber Pro y ERP.
-              </h1>
-              <p
-                style={{
-                  margin: 0,
-                  maxWidth: 620,
-                  color: "hsl(var(--text-muted))",
-                  fontSize: 13.5,
-                  lineHeight: 1.45,
-                }}
-              >
-                Menos copy, menos altura y la lectura util arriba: estado, cobertura y acceso directo a cada sistema.
-              </p>
-            </div>
-
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-              <Button href="/dte/dashboard" type="primary" size="small">
-                Abrir DTE
-              </Button>
-              <Button href="/barber/dashboard" size="small">
-                Abrir Barber Pro
-              </Button>
-              <Button href="/erp/dashboard" size="small">
-                Abrir ERP
-              </Button>
-            </div>
-          </div>
-
-          <div
-            style={{
-              display: "grid",
-              gap: 10,
-              padding: 12,
-              borderRadius: 18,
-              border: "1px solid hsl(var(--border-default))",
-              background: "hsl(var(--bg-surface))",
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 12 }}>
-              <div>
-                <div style={{ color: "hsl(var(--text-muted))", fontSize: 12 }}>Salud general</div>
-                <div style={{ color: "hsl(var(--text-primary))", fontSize: 20, fontWeight: 800 }}>
-                  {healthyCount}/3
-                </div>
-              </div>
-              <div style={{ textAlign: "right" }}>
-                <div style={{ color: "hsl(var(--text-muted))", fontSize: 12 }}>Conectados</div>
-                <div style={{ color: "hsl(var(--text-primary))", fontSize: 20, fontWeight: 800 }}>
-                  {connectedCount}
-                </div>
-              </div>
-            </div>
-
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 8 }}>
-              <div style={{ borderRadius: 14, padding: "0.65rem 0.75rem", background: "hsl(var(--bg-subtle))" }}>
-                <div style={{ color: "hsl(var(--text-muted))", fontSize: 11 }}>Operativos</div>
-                <div style={{ color: "hsl(var(--text-primary))", fontSize: 16, fontWeight: 800 }}>{healthyCount}</div>
-              </div>
-              <div style={{ borderRadius: 14, padding: "0.65rem 0.75rem", background: "hsl(var(--bg-subtle))" }}>
-                <div style={{ color: "hsl(var(--text-muted))", fontSize: 11 }}>Con alerta</div>
-                <div style={{ color: "hsl(var(--text-primary))", fontSize: 16, fontWeight: 800 }}>{degradedCount}</div>
-              </div>
-              <div style={{ borderRadius: 14, padding: "0.65rem 0.75rem", background: "hsl(var(--bg-subtle))" }}>
-                <div style={{ color: "hsl(var(--text-muted))", fontSize: 11 }}>Offline</div>
-                <div style={{ color: "hsl(var(--text-primary))", fontSize: 16, fontWeight: 800 }}>{offlineCount}</div>
-              </div>
-            </div>
-
-            <div
-              style={{
-                display: "grid",
-                gap: 8,
-                padding: 12,
-                borderRadius: 16,
-                border: "1px solid hsl(var(--border-default))",
-                background: "hsl(var(--bg-surface))",
-              }}
-            >
-              <div style={{ color: "hsl(var(--text-muted))", fontSize: 12 }}>Cobertura global</div>
-              <div style={{ color: "hsl(var(--text-primary))", fontSize: 20, fontWeight: 800 }}>
-                {formatNumber(totalTenants)}
-              </div>
-              <div style={{ color: "hsl(var(--text-muted))", fontSize: 12, lineHeight: 1.4 }}>
-                {formatNumber(activeTenants)} tenants activos entre DTE, Barber Pro y ERP.
-              </div>
-            </div>
-          </div>
-        </div>
-      </Card>
+      <PageHeader
+        eyebrow="Vista global"
+        title="Panel central Speeddan"
+        description={`${healthyCount}/3 servicios operativos · ${formatNumber(activeTenants)} tenants activos · ${formatNumber(totalTenants)} en total`}
+        actions={
+          <>
+            <Button href="/dte/dashboard" size="small" style={{ borderColor: "hsl(var(--section-dte))", color: "hsl(var(--section-dte))" }}>
+              Abrir DTE
+            </Button>
+            <Button href="/barber/dashboard" size="small" style={{ borderColor: "hsl(var(--section-barber))", color: "hsl(var(--section-barber))" }}>
+              Abrir Barber Pro
+            </Button>
+            <Button href="/erp/dashboard" size="small" style={{ borderColor: "hsl(var(--section-erp))", color: "hsl(var(--section-erp))" }}>
+              Abrir ERP
+            </Button>
+          </>
+        }
+      />
 
       <Row gutter={[12, 12]}>
         <Col xs={24} sm={12} xl={8}>
