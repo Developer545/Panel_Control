@@ -150,7 +150,7 @@ export function NewBarberTenantDrawer() {
           onFinish={handleSubmit}
           initialValues={{ plan: "TRIAL", maxBarbers: 3 }}
         >
-          <Divider orientation="left" orientationMargin={0} style={{ fontSize: 12, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em" }}>
+          <Divider orientationMargin={0} style={{ fontSize: 12, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em" }}>
             Datos de la barbería
           </Divider>
 
@@ -197,7 +197,7 @@ export function NewBarberTenantDrawer() {
             <Input placeholder="7700-0000" />
           </Form.Item>
 
-          <Divider orientation="left" orientationMargin={0} style={{ fontSize: 12, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em" }}>
+          <Divider orientationMargin={0} style={{ fontSize: 12, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em" }}>
             Usuario propietario (Owner)
           </Divider>
 
