@@ -66,6 +66,26 @@ export async function getBarberTenant(id: number) {
   });
 }
 
+export type BarberConfig = {
+  brandName: string;
+  tagline: string;
+  features: { title: string; description: string }[];
+};
+
+export async function getBarberConfig() {
+  return fetchJson<BarberConfig>(`${getBaseUrl()}/config`, {
+    headers: getHeaders(),
+  });
+}
+
+export async function updateBarberConfig(data: Partial<BarberConfig>) {
+  return fetchJson<BarberConfig>(`${getBaseUrl()}/config`, {
+    method: "PUT",
+    headers: { ...getHeaders(), "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+}
+
 export type CreateBarberTenantInput = {
   name: string;
   slug: string;
