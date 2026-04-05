@@ -23,9 +23,9 @@
   --raw-shell-900:  222 44% 12%;
   --raw-shell-800:  220 35% 18%;
 
-  /* Page surface — violeta visible igual al login */
-  --raw-page:       258 55% 93%;
-  --raw-page-soft:  258 50% 95%;
+  /* Page surface — violeta profundo para glassmorphism */
+  --raw-page:       258 60% 89%;
+  --raw-page-soft:  258 55% 92%;
 
   /* Brand violet */
   --raw-primary:        262 72% 58%;
@@ -107,6 +107,13 @@
   --shadow-xl:   0 16px 40px -10px hsl(var(--raw-black) / 0.12);
   --shadow-color: var(--raw-black);
 
+  /* ── Glass system ── */
+  --glass-blur:         16px;
+  --glass-blur-strong:  24px;
+  --glass-blur-sidebar: 20px;
+  --shadow-glass:       0 8px 32px -8px hsl(262 72% 40% / 0.18),
+                        0 2px 8px  -2px hsl(262 72% 40% / 0.10);
+
   /* Fonts */
   --font-sans:    var(--font-manrope), "Segoe UI", sans-serif;
   --font-display: var(--font-space-grotesk), var(--font-manrope), sans-serif;
@@ -136,7 +143,22 @@
   --color-state-success: hsl(var(--state-success));
   --color-state-warning: hsl(var(--state-warning));
   --color-state-danger: hsl(var(--state-danger));
-  --font-sans: var(--font-sans);
+  --font-sans: var(--font-manrope), "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+
+  /* ── shadcn/ui color aliases (Tailwind v4 @theme) ── */
+  --color-background:            hsl(var(--bg-page));
+  --color-foreground:            hsl(var(--text-primary));
+  --color-card:                  hsl(var(--bg-surface));
+  --color-card-foreground:       hsl(var(--text-primary));
+  --color-primary:               hsl(var(--accent));
+  --color-primary-foreground:    hsl(var(--text-inverse));
+  --color-secondary:             hsl(var(--bg-surface-muted));
+  --color-secondary-foreground:  hsl(var(--text-secondary));
+  --color-muted:                 hsl(var(--bg-subtle));
+  --color-muted-foreground:      hsl(var(--text-muted));
+  --color-destructive:           hsl(var(--state-danger));
+  --color-destructive-foreground: hsl(var(--raw-white));
+  --color-ring:                  hsl(var(--accent));
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -187,6 +209,55 @@ button, input, textarea, select { font: inherit; }
   border: 1px solid hsl(var(--border-default));
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-card);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   GLASS SYSTEM
+   ═══════════════════════════════════════════════════════════ */
+
+.glass-topbar {
+  background: hsl(0 0% 100% / 0.82) !important;
+  backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+  border-bottom: 1px solid hsl(var(--raw-ink-200) / 0.7) !important;
+  box-shadow: 0 1px 0 0 hsl(var(--raw-ink-300) / 0.08),
+              0 4px 16px -4px hsl(262 72% 40% / 0.06);
+}
+
+.glass-sidebar {
+  background: hsl(222 47% 7% / 0.90) !important;
+  backdrop-filter: blur(var(--glass-blur-sidebar)) saturate(140%);
+  -webkit-backdrop-filter: blur(var(--glass-blur-sidebar)) saturate(140%);
+  border-right: 1px solid hsl(262 30% 50% / 0.14) !important;
+  box-shadow: 4px 0 24px -4px hsl(222 47% 4% / 0.30);
+}
+
+.glass-metric-card {
+  background: hsl(262 100% 99% / 0.58) !important;
+  backdrop-filter: blur(var(--glass-blur)) saturate(160%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(160%);
+  box-shadow:
+    0 4px 24px -6px hsl(262 72% 40% / 0.14),
+    0 1px 4px  0   hsl(262 72% 40% / 0.08),
+    inset 0 1px 0 0 hsl(0 0% 100% / 0.60);
+}
+
+.section-badge {
+  background: var(--section-bg, hsl(var(--accent) / 0.1)) !important;
+  color: var(--section-color, hsl(var(--accent))) !important;
+  border-color: var(--section-color, hsl(var(--accent))) !important;
+  border-width: 1px;
+  border-style: solid;
+  border-opacity: 0.25;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.07em !important;
+  text-transform: uppercase !important;
+  padding-inline: 10px !important;
+  height: 22px !important;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 6px;
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -363,9 +434,10 @@ button, input, textarea, select { font: inherit; }
 .control-dashboard {
   position: relative;
   background:
-    radial-gradient(ellipse 80% 45% at 15% 0%, hsl(262 100% 95%) 0%, transparent 52%),
-    radial-gradient(ellipse 60% 35% at 90% 95%, hsl(262 80% 93%) 0%, transparent 48%),
-    hsl(262 40% 96%) !important;
+    radial-gradient(ellipse 100% 55% at 0%   -5%,  hsl(262 100% 88%) 0%, transparent 52%),
+    radial-gradient(ellipse 70%  40% at 100% 105%, hsl(258 80%  85%) 0%, transparent 48%),
+    radial-gradient(ellipse 50%  60% at 50%   50%, hsl(262 60%  92%) 0%, transparent 70%),
+    hsl(258 60% 89%) !important;
 }
 
 .control-dashboard .surface-card {
@@ -384,9 +456,14 @@ button, input, textarea, select { font: inherit; }
 }
 
 .control-dashboard .ant-card {
-  background: hsl(var(--raw-white));
-  border-color: hsl(var(--border-default)) !important;
-  box-shadow: 0 1px 4px 0 hsl(var(--raw-black) / 0.07), 0 1px 2px -1px hsl(var(--raw-black) / 0.05);
+  background: hsl(0 0% 100% / 0.72) !important;
+  backdrop-filter: blur(12px) saturate(150%);
+  -webkit-backdrop-filter: blur(12px) saturate(150%);
+  border-color: hsl(262 40% 70% / 0.18) !important;
+  box-shadow:
+    0 2px 12px -4px hsl(262 72% 40% / 0.10),
+    0 1px 3px  0   hsl(var(--raw-black) / 0.05),
+    inset 0 1px 0 0 hsl(0 0% 100% / 0.50);
 }
 
 .control-dashboard .ant-card .ant-card-body { padding: 1rem; }

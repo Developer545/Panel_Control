@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { Avatar, Button, Layout, Space, Tag } from "antd";
+import { Avatar, Button, Layout, Space } from "antd";
 import { Menu as MenuIcon } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { usePathname, useRouter } from "next/navigation";
 import type { ReactNode } from "react";
 import { ControlSidebar } from "@/components/layout/ControlSidebar";
@@ -42,18 +43,11 @@ export function DashboardChrome({ children }: { children: ReactNode }) {
   const sessionLabel   = session?.username ?? "admin";
   const sessionInitial = getInitials(session?.username);
 
-  // Gradiente violeta igual al login — aplicado al Layout para no ser tapado por body::before
-  const dashboardBg = [
-    "radial-gradient(ellipse 90% 50% at 12% 0%, hsl(262 100% 93%) 0%, transparent 55%)",
-    "radial-gradient(ellipse 60% 35% at 88% 100%, hsl(262 80% 90%) 0%, transparent 50%)",
-    "hsl(258 55% 91%)",
-  ].join(", ");
-
   return (
     <Layout
       className="control-dashboard"
       hasSider
-      style={{ minHeight: "100vh", background: dashboardBg }}
+      style={{ minHeight: "100vh" }}
     >
       <ControlSidebar mobileOpen={mobileOpen} onMobileClose={() => setMobileOpen(false)} />
 
@@ -61,12 +55,11 @@ export function DashboardChrome({ children }: { children: ReactNode }) {
 
         {/* ── Topbar ── */}
         <Header
+          className="glass-topbar"
           style={{
             height: "auto",
             lineHeight: 1,
             padding: "0 16px",
-            background: "hsl(var(--bg-surface))",
-            borderBottom: "1px solid hsl(var(--border-default))",
             position: "sticky",
             top: 0,
             zIndex: 10,
@@ -91,23 +84,16 @@ export function DashboardChrome({ children }: { children: ReactNode }) {
                 onClick={() => setMobileOpen(true)}
                 style={{ color: "hsl(var(--text-muted))" }}
               />
-              <Tag
-                bordered={false}
+              <Badge
+                variant="outline"
+                className="section-badge"
                 style={{
-                  margin: 0,
-                  background: `hsl(var(${active.accent}) / 0.1)`,
-                  color: `hsl(var(${active.accent}))`,
-                  borderRadius: 6,
-                  paddingInline: 10,
-                  fontWeight: 700,
-                  fontSize: 11,
-                  lineHeight: "22px",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.07em",
-                }}
+                  "--section-color": `hsl(var(${active.accent}))`,
+                  "--section-bg":    `hsl(var(${active.accent}) / 0.1)`,
+                } as React.CSSProperties}
               >
                 {active.label}
-              </Tag>
+              </Badge>
             </Space>
 
             {/* Right: overview link + status + user chip */}
@@ -123,23 +109,16 @@ export function DashboardChrome({ children }: { children: ReactNode }) {
                 </Button>
               )}
 
-              <Tag
-                bordered={false}
+              <Badge
+                variant="outline"
+                className="section-badge"
                 style={{
-                  margin: 0,
-                  background: "hsl(var(--status-success-bg))",
-                  color: "hsl(var(--status-success))",
-                  borderRadius: 6,
-                  paddingInline: 10,
-                  fontWeight: 700,
-                  fontSize: 11,
-                  lineHeight: "22px",
-                  letterSpacing: "0.05em",
-                  textTransform: "uppercase",
-                }}
+                  "--section-color": "hsl(var(--status-success))",
+                  "--section-bg":    "hsl(var(--status-success-bg))",
+                } as React.CSSProperties}
               >
                 Operativo
-              </Tag>
+              </Badge>
 
               <div
                 style={{

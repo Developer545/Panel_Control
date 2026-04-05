@@ -215,9 +215,9 @@ function getDashboardTheme() {
     },
     components: {
       Layout: {
-        headerBg: tokenColor("--bg-surface"),
-        bodyBg: tokenColor("--bg-page"),
-        siderBg: tokenColor("--bg-sidebar"),
+        headerBg: "transparent",
+        bodyBg:   "transparent",
+        siderBg:  "transparent",
       },
       Menu: {
         darkItemBg: "transparent",

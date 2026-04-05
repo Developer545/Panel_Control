@@ -165,7 +165,7 @@ function SidebarContent({
           justifyContent: "space-between",
           gap: 10,
           padding: collapsed ? "10px 10px" : "10px 14px",
-          borderBottom: "1px solid hsl(var(--sidebar-border))",
+          borderBottom: "1px solid hsl(262 30% 50% / 0.18)",
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
@@ -306,8 +306,13 @@ export function ControlSidebar({ mobileOpen = false, onMobileClose }: ControlSid
         width={232}
         closable={false}
         styles={{
-          body: { padding: 0, background: "hsl(var(--bg-sidebar))" },
-          wrapper: { boxShadow: "var(--shadow-xl)" },
+          body: {
+            padding: 0,
+            background: "hsl(222 47% 7% / 0.92)",
+            backdropFilter: "blur(20px) saturate(140%)",
+            WebkitBackdropFilter: "blur(20px) saturate(140%)",
+          },
+          wrapper: { boxShadow: "4px 0 40px -8px hsl(222 47% 4% / 0.45)" },
         }}
       >
         <SidebarContent {...contentProps} />
@@ -322,7 +327,7 @@ export function ControlSidebar({ mobileOpen = false, onMobileClose }: ControlSid
       collapsedWidth={72}
       collapsed={collapsed}
       trigger={null}
-      className="panel-sider"
+      className="panel-sider glass-sidebar"
       style={{ height: "100vh", position: "sticky", top: 0, overflow: "hidden" }}
     >
       <SidebarContent {...contentProps} />
