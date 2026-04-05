@@ -1,3 +1,5 @@
+"use client";
+
 import { Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import type { ReactNode } from "react";
