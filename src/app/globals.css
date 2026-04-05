@@ -23,9 +23,9 @@
   --raw-shell-900:  222 44% 12%;
   --raw-shell-800:  220 35% 18%;
 
-  /* Page surface — violeta medio para que el glass tenga contraste */
-  --raw-page:       258 48% 74%;
-  --raw-page-soft:  258 42% 78%;
+  /* Page surface — blanco/gris muy claro */
+  --raw-page:       220 20% 97%;
+  --raw-page-soft:  220 16% 95%;
 
   /* Brand violet */
   --raw-primary:        262 72% 58%;
@@ -212,35 +212,24 @@ button, input, textarea, select { font: inherit; }
 }
 
 /* ═══════════════════════════════════════════════════════════
-   GLASS SYSTEM
+   LAYOUT CLASSES
    ═══════════════════════════════════════════════════════════ */
 
 .glass-topbar {
-  background: hsl(0 0% 100% / 0.55) !important;
-  backdrop-filter: blur(20px) saturate(200%);
-  -webkit-backdrop-filter: blur(20px) saturate(200%);
-  border-bottom: 1px solid hsl(0 0% 100% / 0.30) !important;
-  box-shadow: 0 1px 0 0 hsl(0 0% 100% / 0.20),
-              0 4px 24px -4px hsl(262 72% 30% / 0.15);
+  background: hsl(var(--raw-white)) !important;
+  border-bottom: 1px solid hsl(var(--border-default)) !important;
+  box-shadow: 0 1px 3px 0 hsl(var(--raw-black) / 0.06);
 }
 
 .glass-sidebar {
-  background: hsl(240 35% 12% / 0.80) !important;
-  backdrop-filter: blur(var(--glass-blur-sidebar)) saturate(160%);
-  -webkit-backdrop-filter: blur(var(--glass-blur-sidebar)) saturate(160%);
-  border-right: 1px solid hsl(0 0% 100% / 0.08) !important;
-  box-shadow: 4px 0 32px -4px hsl(240 50% 5% / 0.50);
+  background: hsl(var(--bg-sidebar)) !important;
+  border-right: 1px solid hsl(var(--sidebar-border)) !important;
 }
 
 .glass-metric-card {
-  background: hsl(0 0% 100% / 0.22) !important;
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border: 1px solid hsl(0 0% 100% / 0.30) !important;
-  box-shadow:
-    0 4px 24px -6px hsl(262 60% 20% / 0.25),
-    0 1px 4px  0   hsl(262 60% 20% / 0.12),
-    inset 0 1px 0 0 hsl(0 0% 100% / 0.50);
+  background: hsl(var(--raw-white)) !important;
+  border: 1px solid hsl(var(--border-default)) !important;
+  box-shadow: var(--shadow-card);
 }
 
 .section-badge {
@@ -433,20 +422,14 @@ button, input, textarea, select { font: inherit; }
    !important necesario para ganar al .ant-layout { background: transparent !important } */
 .control-dashboard {
   position: relative;
-  background:
-    radial-gradient(ellipse 90%  50% at 0%    0%,  hsl(270 80%  62%) 0%, transparent 55%),
-    radial-gradient(ellipse 60%  40% at 100% 100%, hsl(240 70%  58%) 0%, transparent 50%),
-    radial-gradient(ellipse 45%  55% at 55%   45%, hsl(262 65%  68%) 0%, transparent 65%),
-    hsl(258 48% 74%) !important;
+  background: hsl(var(--bg-page)) !important;
 }
 
 .control-dashboard .surface-card {
-  background: hsl(0 0% 100% / 0.30);
-  backdrop-filter: blur(16px) saturate(180%);
-  -webkit-backdrop-filter: blur(16px) saturate(180%);
-  border: 1px solid hsl(0 0% 100% / 0.28);
+  background: hsl(var(--raw-white));
+  border: 1px solid hsl(var(--border-default));
   border-radius: var(--radius-md);
-  box-shadow: 0 4px 24px -6px hsl(262 60% 20% / 0.20), inset 0 1px 0 0 hsl(0 0% 100% / 0.40);
+  box-shadow: var(--shadow-card);
 }
 
 .control-dashboard .ant-card,
@@ -458,21 +441,16 @@ button, input, textarea, select { font: inherit; }
 }
 
 .control-dashboard .ant-card {
-  background: hsl(0 0% 100% / 0.30) !important;
-  backdrop-filter: blur(16px) saturate(180%);
-  -webkit-backdrop-filter: blur(16px) saturate(180%);
-  border-color: hsl(0 0% 100% / 0.28) !important;
-  box-shadow:
-    0 4px 24px -6px hsl(262 60% 20% / 0.20),
-    0 1px 3px  0   hsl(262 60% 20% / 0.10),
-    inset 0 1px 0 0 hsl(0 0% 100% / 0.40);
+  background: hsl(var(--raw-white)) !important;
+  border-color: hsl(var(--border-default)) !important;
+  box-shadow: var(--shadow-card);
 }
 
 .control-dashboard .ant-card .ant-card-body { padding: 1rem; }
 
 .control-dashboard .ant-card-head {
   min-height: 44px;
-  border-bottom-color: hsl(0 0% 100% / 0.18) !important;
+  border-bottom-color: hsl(var(--border-default)) !important;
 }
 
 .control-dashboard .ant-card-head-title {
