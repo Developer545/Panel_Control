@@ -215,11 +215,11 @@ export function NewBarberTenantDrawer() {
             <Input placeholder="Ej: Carlos Martínez" />
           </Form.Item>
 
-          <Form.Item label="Email de acceso" name="ownerEmail" rules={[
-            { required: true, message: "El email es requerido" },
-            { type: "email", message: "Email inválido" },
+          <Form.Item label="Usuario o email" name="ownerEmail" rules={[
+            { required: true, message: "El usuario es requerido" },
+            { min: 3, message: "Mínimo 3 caracteres" },
           ]}>
-            <Input placeholder="carlos@barberia.com" />
+            <Input placeholder="karla12 o karla@email.com" />
           </Form.Item>
 
           <Form.Item label="Contraseña inicial" name="ownerPassword" rules={[
@@ -268,7 +268,7 @@ export function NewBarberTenantDrawer() {
                 <div><Text strong style={{ fontSize: 16 }}>{credentials.slug}</Text></div>
               </div>
               <div style={{ marginBottom: 8 }}>
-                <Text type="secondary" style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.1em" }}>Email</Text>
+                <Text type="secondary" style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.1em" }}>Usuario</Text>
                 <div><Text strong>{credentials.ownerEmail}</Text></div>
               </div>
               <div>
