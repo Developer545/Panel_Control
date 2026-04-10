@@ -1,8 +1,11 @@
+import Link from "next/link";
 import { Alert, Card, Col, Descriptions, Row, Tag } from "antd";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { getErrorMessage } from "@/lib/error-message";
 import { formatDate } from "@/lib/formatters";
 import { getBarberTenant } from "@/lib/integrations/barber";
+
+const BARBER_APP_URL = (process.env.BARBER_PANEL_URL ?? "https://speeddan-barberia.vercel.app").replace(/\/$/, "");
 
 async function loadBarberTenant(id: string) {
   try {
@@ -39,6 +42,16 @@ export default async function BarberTenantDetailPage({
         <Col xs={24} xl={14}>
           <Card className="surface-card border-0">
             <Descriptions bordered column={1}>
+              <Descriptions.Item label="Acceso directo">
+                <Link href={`${BARBER_APP_URL}/login/${tenant.slug}`} target="_blank" rel="noopener noreferrer" style={{ color: "#0d9488", fontWeight: 600 }}>
+                  {BARBER_APP_URL}/login/{tenant.slug} ↗
+                </Link>
+              </Descriptions.Item>
+              <Descriptions.Item label="Tipo">
+                <Tag color={tenant.businessType === "SALON" ? "magenta" : "cyan"}>
+                  {tenant.businessType === "SALON" ? "Salón de belleza" : "Barbería"}
+                </Tag>
+              </Descriptions.Item>
               <Descriptions.Item label="Slug">{tenant.slug}</Descriptions.Item>
               <Descriptions.Item label="Plan">{tenant.plan}</Descriptions.Item>
               <Descriptions.Item label="Estado">

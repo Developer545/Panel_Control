@@ -4,6 +4,7 @@ import type { PaginatedResult, ServiceHealth } from "@/lib/integrations/types";
 
 export type BarberPlan = "TRIAL" | "BASIC" | "PRO" | "ENTERPRISE";
 export type BarberStatus = "TRIAL" | "ACTIVE" | "SUSPENDED" | "CANCELLED";
+export type BarberBusinessType = "BARBERIA" | "SALON";
 
 export type BarberTenantListItem = {
   id: number;
@@ -11,6 +12,7 @@ export type BarberTenantListItem = {
   name: string;
   plan: BarberPlan;
   status: BarberStatus;
+  businessType: BarberBusinessType | null;
   trialEndsAt: string | null;
   paidUntil: string | null;
   email: string | null;
