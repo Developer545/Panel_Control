@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Button, message, Modal, Space, Table, Tag } from "antd";
-import { EditOutlined, DeleteOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
+import { Button, message, Modal, Space, Table, Tag, Tooltip } from "antd";
+import { EditOutlined, DeleteOutlined, ExclamationCircleOutlined, CopyOutlined } from "@ant-design/icons";
 import type { ColumnsType } from "antd/es/table";
 import type { BarberTenantListItem } from "@/lib/integrations/barber";
 import { EditBarberTenantDrawer } from "./EditBarberTenantDrawer";
@@ -106,6 +106,28 @@ export function BarberTenantsTable({
       key: "paidUntil",
       title: "Pago hasta",
       render: (_, row) => formatDate(row.paidUntil),
+    },
+    {
+      key: "owner",
+      title: "Propietario",
+      render: (_, row) => {
+        const owner = row.users?.[0];
+        if (!owner) return <span style={{ color: "hsl(var(--text-muted))", fontSize: 12 }}>—</span>;
+        return (
+          <div style={{ lineHeight: 1.3 }}>
+            <div style={{ fontWeight: 600, fontSize: 12 }}>{owner.fullName}</div>
+            <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+              <span style={{ color: "hsl(var(--text-muted))", fontSize: 11 }}>{owner.email}</span>
+              <Tooltip title="Copiar email">
+                <CopyOutlined
+                  style={{ fontSize: 11, color: "hsl(var(--text-muted))", cursor: "pointer" }}
+                  onClick={() => { navigator.clipboard.writeText(owner.email); }}
+                />
+              </Tooltip>
+            </div>
+          </div>
+        );
+      },
     },
     {
       key: "city",

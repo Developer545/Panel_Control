@@ -27,6 +27,7 @@ export type BarberTenantListItem = {
     barbers: number;
     appointments: number;
   };
+  users?: { id: number; fullName: string; email: string }[];
 };
 
 export type BarberDashboardStats = {
