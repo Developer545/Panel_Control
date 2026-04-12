@@ -60,8 +60,11 @@ export function NewBarberTenantDrawer({ barberAppUrl }: { barberAppUrl: string }
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [credentials, setCredentials] = useState<Credentials | null>(null);
+  const [businessType, setBusinessType] = useState<"BARBERIA" | "SALON">("BARBERIA");
   const [form] = Form.useForm<FormValues>();
   const [messageApi, contextHolder] = message.useMessage();
+
+  const typeLabel = businessType === "SALON" ? "Salón de Belleza" : "Barbería";
 
   function handleNameChange(e: React.ChangeEvent<HTMLInputElement>) {
     const slug = slugify(e.target.value);
@@ -130,21 +133,21 @@ export function NewBarberTenantDrawer({ barberAppUrl }: { barberAppUrl: string }
         onClick={() => setOpen(true)}
         style={{ background: "hsl(var(--section-barber))", borderColor: "hsl(var(--section-barber))" }}
       >
-        Nueva barbería
+        Nuevo negocio
       </Button>
 
       <Drawer
-        title="Nueva barbería"
+        title={`Nueva ${typeLabel}`}
         width={520}
         open={open}
-        onClose={() => { setOpen(false); form.resetFields(); }}
+        onClose={() => { setOpen(false); form.resetFields(); setBusinessType("BARBERIA"); }}
         footer={
           <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
-            <Button onClick={() => { setOpen(false); form.resetFields(); }}>Cancelar</Button>
+            <Button onClick={() => { setOpen(false); form.resetFields(); setBusinessType("BARBERIA"); }}>Cancelar</Button>
             <Button type="primary" loading={loading} onClick={() => form.submit()}
               style={{ background: "hsl(var(--section-barber))", borderColor: "hsl(var(--section-barber))" }}
             >
-              Crear barbería
+              Crear {typeLabel}
             </Button>
           </div>
         }
@@ -176,7 +179,7 @@ export function NewBarberTenantDrawer({ barberAppUrl }: { barberAppUrl: string }
           </Form.Item>
 
           <Form.Item label="Tipo de negocio" name="businessType">
-            <Radio.Group buttonStyle="solid">
+            <Radio.Group buttonStyle="solid" onChange={(e) => setBusinessType(e.target.value)}>
               <Radio.Button value="BARBERIA">Barbería</Radio.Button>
               <Radio.Button value="SALON">Salón de Belleza</Radio.Button>
             </Radio.Group>
@@ -248,7 +251,7 @@ export function NewBarberTenantDrawer({ barberAppUrl }: { barberAppUrl: string }
 
       <Modal
         open={!!credentials}
-        title="Barbería creada exitosamente"
+        title={`${typeLabel} creada exitosamente`}
         onCancel={() => setCredentials(null)}
         footer={
           <Button type="primary" onClick={() => setCredentials(null)}>Listo</Button>
