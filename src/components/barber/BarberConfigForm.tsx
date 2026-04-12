@@ -77,7 +77,7 @@ export function BarberConfigForm({ initialConfig }: { initialConfig: BarberConfi
             name="brandName"
             rules={[{ required: true, message: "Requerido" }]}
           >
-            <Input placeholder="Speeddan" />
+            <Input placeholder="BookStyles" />
           </Form.Item>
           <Form.Item
             label="Subtítulo"

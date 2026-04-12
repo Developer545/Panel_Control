@@ -228,7 +228,7 @@ export function AppSidebar() {
                   color: "hsl(var(--sidebar-muted))",
                 }}
               >
-                SPEEDDAN CONTROL
+                BOOKSTYLES CONTROL
               </p>
               <p
                 style={{

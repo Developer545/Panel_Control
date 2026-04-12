@@ -143,7 +143,7 @@ export default function LoginPage() {
                   letterSpacing: "-0.06em",
                 }}
               >
-                Speeddan Control
+                BookStyles Control
               </h1>
               <p
                 style={{

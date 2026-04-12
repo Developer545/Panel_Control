@@ -1,6 +1,6 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
 
-export const PANEL_SESSION_COOKIE = "speeddan_control_v3_session";
+export const PANEL_SESSION_COOKIE = "bookstyles_control_session";
 const PANEL_SESSION_TTL_SECONDS = 60 * 60 * 12;
 
 export type PanelSession = {

@@ -205,7 +205,7 @@ export default async function OverviewV2() {
     <div className="space-y-4">
       <PageHeader
         eyebrow="Vista global"
-        title="Panel central Speeddan"
+        title="Panel central BookStyles"
         description={`${healthyCount}/3 servicios operativos · ${formatNumber(activeTenants)} tenants activos · ${formatNumber(totalTenants)} en total`}
         actions={
           <>

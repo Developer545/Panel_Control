@@ -172,7 +172,7 @@ function SidebarContent({
           <div className="panel-sider__mark">SC</div>
           {!collapsed && (
             <div style={{ minWidth: 0 }}>
-              <p className="panel-sider__eyebrow">Speeddan</p>
+              <p className="panel-sider__eyebrow">BookStyles</p>
               <span style={{ color: "hsl(var(--sidebar-fg))", fontSize: 13, fontWeight: 700, display: "block", lineHeight: 1.2 }}>
                 Panel de control
               </span>

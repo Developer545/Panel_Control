@@ -17,7 +17,7 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "Speeddan Control V3",
+  title: "BookStyles Control",
   description: "Panel central para Barber Pro, ERP Full Pro y DTE",
 };
 
@@ -27,7 +27,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const cookieStore = await cookies();
-  const sessionToken = cookieStore.get("speeddan_control_v3_session")?.value;
+  const sessionToken = cookieStore.get("bookstyles_control_session")?.value;
   const session = sessionToken ? verifyPanelSessionToken(sessionToken) : null;
 
   return (

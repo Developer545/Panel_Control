@@ -1,4 +1,4 @@
-export const CONTROL_THEME_STORAGE_KEY = "speeddan-control-theme";
+export const CONTROL_THEME_STORAGE_KEY = "bookstyles-control-theme";
 
 export type ControlThemePreset = {
   id: string;
