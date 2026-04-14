@@ -11,10 +11,13 @@ import {
   Radio,
   Select,
   Space,
+  Tabs,
+  Tag,
+  Table,
   message,
 } from "antd";
 import dayjs from "dayjs";
-import type { BarberTenantListItem } from "@/lib/integrations/barber";
+import type { BarberTenantListItem, BarberBranchItem } from "@/lib/integrations/barber";
 
 type FormValues = {
   name: string;
@@ -45,9 +48,15 @@ export function EditBarberTenantDrawer({
   const [form] = Form.useForm<FormValues>();
   const [loading, setLoading] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
+  const [branches, setBranches] = useState<BarberBranchItem[]>([]);
+  const [branchesLoading, setBranchesLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState("datos");
 
   useEffect(() => {
     if (open) {
+      setActiveTab("datos");
+      setBranches([]);
+      loadBranches();
       form.setFieldsValue({
         name: tenant.name,
         slug: tenant.slug,
@@ -64,6 +73,18 @@ export function EditBarberTenantDrawer({
       });
     }
   }, [open, tenant, form]);
+
+  async function loadBranches() {
+    setBranchesLoading(true);
+    try {
+      const res = await fetch(`/api/panel/barber/tenants/${tenant.id}/branches`);
+      if (res.ok) setBranches(await res.json());
+    } catch {
+      // silently ignore — branches tab will show empty
+    } finally {
+      setBranchesLoading(false);
+    }
+  }
 
   async function handleSubmit(values: FormValues) {
     setLoading(true);
@@ -124,79 +145,145 @@ export function EditBarberTenantDrawer({
           </div>
         }
       >
-        <Form form={form} layout="vertical" onFinish={handleSubmit}>
-          <Form.Item label="Nombre" name="name" rules={[{ required: true }]}>
-            <Input />
-          </Form.Item>
+        <Tabs
+          activeKey={activeTab}
+          onChange={setActiveTab}
+          size="small"
+          items={[
+            {
+              key: "datos",
+              label: "Datos",
+              children: (
+                <Form form={form} layout="vertical" onFinish={handleSubmit}>
+                  <Form.Item label="Nombre" name="name" rules={[{ required: true }]}>
+                    <Input />
+                  </Form.Item>
 
-          <Form.Item
-            label="Slug"
-            name="slug"
-            rules={[
-              { required: true },
-              { pattern: /^[a-z0-9-]+$/, message: "Solo minúsculas, números y guiones" },
-            ]}
-          >
-            <Input prefix="/" />
-          </Form.Item>
+                  <Form.Item
+                    label="Slug"
+                    name="slug"
+                    rules={[
+                      { required: true },
+                      { pattern: /^[a-z0-9-]+$/, message: "Solo minúsculas, números y guiones" },
+                    ]}
+                  >
+                    <Input prefix="/" />
+                  </Form.Item>
 
-          <Form.Item label="Tipo de negocio" name="businessType">
-            <Radio.Group buttonStyle="solid">
-              <Radio.Button value="BARBERIA">Barbería</Radio.Button>
-              <Radio.Button value="SALON">Salón de Belleza</Radio.Button>
-            </Radio.Group>
-          </Form.Item>
+                  <Form.Item label="Tipo de negocio" name="businessType">
+                    <Radio.Group buttonStyle="solid">
+                      <Radio.Button value="BARBERIA">Barbería</Radio.Button>
+                      <Radio.Button value="SALON">Salón de Belleza</Radio.Button>
+                    </Radio.Group>
+                  </Form.Item>
 
-          <Space style={{ width: "100%" }} size={12}>
-            <Form.Item label="Plan" name="plan" style={{ flex: 1 }}>
-              <Select options={[
-                { value: "TRIAL", label: "Trial" },
-                { value: "BASIC", label: "Basic" },
-                { value: "PRO", label: "Pro" },
-                { value: "ENTERPRISE", label: "Enterprise" },
-              ]} />
-            </Form.Item>
-            <Form.Item label="Estado" name="status" style={{ flex: 1 }}>
-              <Select options={[
-                { value: "TRIAL", label: "Trial" },
-                { value: "ACTIVE", label: "Activo" },
-                { value: "SUSPENDED", label: "Suspendido" },
-                { value: "CANCELLED", label: "Cancelado" },
-              ]} />
-            </Form.Item>
-          </Space>
+                  <Space style={{ width: "100%" }} size={12}>
+                    <Form.Item label="Plan" name="plan" style={{ flex: 1 }}>
+                      <Select options={[
+                        { value: "TRIAL", label: "Trial" },
+                        { value: "BASIC", label: "Basic" },
+                        { value: "PRO", label: "Pro" },
+                        { value: "ENTERPRISE", label: "Enterprise" },
+                      ]} />
+                    </Form.Item>
+                    <Form.Item label="Estado" name="status" style={{ flex: 1 }}>
+                      <Select options={[
+                        { value: "TRIAL", label: "Trial" },
+                        { value: "ACTIVE", label: "Activo" },
+                        { value: "SUSPENDED", label: "Suspendido" },
+                        { value: "CANCELLED", label: "Cancelado" },
+                      ]} />
+                    </Form.Item>
+                  </Space>
 
-          <Form.Item label="Máx. barberos" name="maxBarbers">
-            <InputNumber min={1} max={50} style={{ width: "100%" }} />
-          </Form.Item>
+                  <Form.Item label="Máx. barberos" name="maxBarbers">
+                    <InputNumber min={1} max={50} style={{ width: "100%" }} />
+                  </Form.Item>
 
-          <Space style={{ width: "100%" }} size={12}>
-            <Form.Item label="Email" name="email" style={{ flex: 1 }}>
-              <Input placeholder="contacto@barberia.com" />
-            </Form.Item>
-            <Form.Item label="Teléfono" name="phone" style={{ flex: 1 }}>
-              <Input placeholder="7700-0000" />
-            </Form.Item>
-          </Space>
+                  <Space style={{ width: "100%" }} size={12}>
+                    <Form.Item label="Email" name="email" style={{ flex: 1 }}>
+                      <Input placeholder="contacto@barberia.com" />
+                    </Form.Item>
+                    <Form.Item label="Teléfono" name="phone" style={{ flex: 1 }}>
+                      <Input placeholder="7700-0000" />
+                    </Form.Item>
+                  </Space>
 
-          <Space style={{ width: "100%" }} size={12}>
-            <Form.Item label="Ciudad" name="city" style={{ flex: 1 }}>
-              <Input placeholder="San Salvador" />
-            </Form.Item>
-            <Form.Item label="País" name="country" style={{ flex: 1 }}>
-              <Input placeholder="SV" maxLength={2} />
-            </Form.Item>
-          </Space>
+                  <Space style={{ width: "100%" }} size={12}>
+                    <Form.Item label="Ciudad" name="city" style={{ flex: 1 }}>
+                      <Input placeholder="San Salvador" />
+                    </Form.Item>
+                    <Form.Item label="País" name="country" style={{ flex: 1 }}>
+                      <Input placeholder="SV" maxLength={2} />
+                    </Form.Item>
+                  </Space>
 
-          <Space style={{ width: "100%" }} size={12}>
-            <Form.Item label="Pago hasta" name="paidUntil" style={{ flex: 1 }}>
-              <DatePicker style={{ width: "100%" }} format="DD/MM/YYYY" />
-            </Form.Item>
-            <Form.Item label="Trial hasta" name="trialEndsAt" style={{ flex: 1 }}>
-              <DatePicker style={{ width: "100%" }} format="DD/MM/YYYY" />
-            </Form.Item>
-          </Space>
-        </Form>
+                  <Space style={{ width: "100%" }} size={12}>
+                    <Form.Item label="Pago hasta" name="paidUntil" style={{ flex: 1 }}>
+                      <DatePicker style={{ width: "100%" }} format="DD/MM/YYYY" />
+                    </Form.Item>
+                    <Form.Item label="Trial hasta" name="trialEndsAt" style={{ flex: 1 }}>
+                      <DatePicker style={{ width: "100%" }} format="DD/MM/YYYY" />
+                    </Form.Item>
+                  </Space>
+                </Form>
+              ),
+            },
+            {
+              key: "sucursales",
+              label: `Sucursales (${branches.length})`,
+              children: (
+                <Table
+                  size="small"
+                  loading={branchesLoading}
+                  dataSource={branches}
+                  rowKey="id"
+                  pagination={false}
+                  columns={[
+                    {
+                      title: "Nombre",
+                      dataIndex: "name",
+                      render: (name: string, row: BarberBranchItem) => (
+                        <span>
+                          {name}
+                          {row.isHeadquarters && (
+                            <Tag color="green" style={{ marginLeft: 6, fontSize: 10 }}>Principal</Tag>
+                          )}
+                        </span>
+                      ),
+                    },
+                    {
+                      title: "Ciudad",
+                      dataIndex: "city",
+                      render: (v: string | null) => v ?? "—",
+                    },
+                    {
+                      title: "Estado",
+                      dataIndex: "status",
+                      render: (v: string) => (
+                        <Tag color={v === "ACTIVE" ? "green" : "default"}>
+                          {v === "ACTIVE" ? "Activa" : "Inactiva"}
+                        </Tag>
+                      ),
+                    },
+                    {
+                      title: "Barberos",
+                      key: "barbers",
+                      align: "center" as const,
+                      render: (_: unknown, row: BarberBranchItem) => row._count.barberAssignments,
+                    },
+                    {
+                      title: "Citas",
+                      key: "appointments",
+                      align: "center" as const,
+                      render: (_: unknown, row: BarberBranchItem) => row._count.appointments,
+                    },
+                  ]}
+                />
+              ),
+            },
+          ]}
+        />
       </Drawer>
     </>
   );

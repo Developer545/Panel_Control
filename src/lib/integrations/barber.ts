@@ -225,6 +225,26 @@ export async function activateBarberTenant(id: number) {
   });
 }
 
+// ── Branches ──────────────────────────────────────────
+
+export type BarberBranchItem = {
+  id: number;
+  name: string;
+  slug: string;
+  city: string | null;
+  status: "ACTIVE" | "INACTIVE";
+  isHeadquarters: boolean;
+  createdAt: string;
+  _count: { barberAssignments: number; appointments: number };
+};
+
+export async function getBarberTenantBranches(tenantId: number) {
+  return fetchJson<BarberBranchItem[]>(
+    `${getBaseUrl()}/tenants/${tenantId}/branches`,
+    { headers: getHeaders() },
+  );
+}
+
 export async function getBarberHealth(): Promise<ServiceHealth> {
   const data = await fetchJson<{
     status: "ok" | "error";

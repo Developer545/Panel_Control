@@ -18,14 +18,14 @@ export async function POST(request: Request) {
       return fail("Usuario y clave son requeridos", 422);
     }
 
-    const expectedUser = process.env.CONTROL_ADMIN_USER;
-    const expectedPass = process.env.CONTROL_ADMIN_PASS;
+    const expectedUser = (process.env.CONTROL_ADMIN_USER ?? '').trim();
+    const expectedPass = (process.env.CONTROL_ADMIN_PASS ?? '').trim();
 
     if (!expectedUser || !expectedPass) {
       return fail("Las credenciales del panel no estan configuradas", 500);
     }
 
-    if (username !== expectedUser || password !== expectedPass) {
+    if (username.trim() !== expectedUser || password.trim() !== expectedPass) {
       return fail("Credenciales invalidas", 401);
     }
 
