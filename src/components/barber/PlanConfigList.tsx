@@ -2,19 +2,22 @@
 
 import { useState } from "react";
 import {
-  Button, Card, Checkbox, Col, Divider, InputNumber,
-  Row, Space, Tag, Typography, message,
+  Button, Card, Checkbox, Col, Divider, Form, Input,
+  InputNumber, Modal, Popconfirm, Row, Space, Tag,
+  Typography, message,
 } from "antd";
-import { SaveOutlined } from "@ant-design/icons";
-import type { BarberPlan, BarberPlanConfigItem, BarberModules } from "@/lib/integrations/barber";
+import { DeleteOutlined, PlusOutlined, SaveOutlined } from "@ant-design/icons";
+import type { BarberPlanConfigItem, BarberModules } from "@/lib/integrations/barber";
 
 const { Text, Title } = Typography;
 
-const PLAN_COLORS: Record<BarberPlan, string> = {
-  TRIAL:      "default",
-  BASIC:      "blue",
-  PRO:        "purple",
-  ENTERPRISE: "gold",
+const SYSTEM_PLANS = ["trial", "basic", "pro", "enterprise"];
+
+const SYSTEM_COLORS: Record<string, string> = {
+  trial:      "default",
+  basic:      "blue",
+  pro:        "purple",
+  enterprise: "gold",
 };
 
 const MODULE_LABELS: Record<keyof BarberModules, string> = {
@@ -35,18 +38,27 @@ const MODULE_LABELS: Record<keyof BarberModules, string> = {
 
 const MODULE_KEYS = Object.keys(MODULE_LABELS) as (keyof BarberModules)[];
 
-// ─────────────────────────────────────────────────────────────────────────────
+const DEFAULT_MODULES: BarberModules = Object.fromEntries(
+  MODULE_KEYS.map((k) => [k, false])
+) as BarberModules;
+
+// ─── PlanCard ────────────────────────────────────────────────────────────────
 
 interface PlanCardProps {
   config: BarberPlanConfigItem;
+  onDeleted: (slug: string) => void;
 }
 
-function PlanCard({ config: initial }: PlanCardProps) {
-  const [saving, setSaving] = useState(false);
-  const [modules, setModules] = useState<BarberModules>({ ...initial.modules });
+function PlanCard({ config: initial, onDeleted }: PlanCardProps) {
+  const [saving, setSaving]         = useState(false);
+  const [deleting, setDeleting]     = useState(false);
+  const [modules, setModules]       = useState<BarberModules>({ ...DEFAULT_MODULES, ...initial.modules });
   const [maxBarbers, setMaxBarbers] = useState(initial.maxBarbers);
   const [maxBranches, setMaxBranches] = useState(initial.maxBranches);
-  const [messageApi, ctx] = message.useMessage();
+  const [messageApi, ctx]           = message.useMessage();
+
+  const isSystem = SYSTEM_PLANS.includes(initial.slug);
+  const tagColor = SYSTEM_COLORS[initial.slug] ?? "cyan";
 
   function toggleModule(key: keyof BarberModules) {
     setModules((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -55,23 +67,39 @@ function PlanCard({ config: initial }: PlanCardProps) {
   async function handleSave() {
     setSaving(true);
     try {
-      const res = await fetch(`/api/panel/barber/plans/${initial.plan}`, {
+      const res = await fetch(`/api/panel/barber/plans/${initial.slug}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ modules, maxBarbers, maxBranches }),
       });
-
       if (!res.ok) {
-        const data = await res.json() as { error?: { message?: string } };
-        messageApi.error(data?.error?.message ?? "Error al guardar");
+        const data = await res.json() as { error?: string };
+        messageApi.error(data?.error ?? "Error al guardar");
         return;
       }
-
-      messageApi.success(`Plan ${initial.displayName} actualizado`);
+      messageApi.success(`Plan "${initial.displayName}" actualizado`);
     } catch {
       messageApi.error("Error de conexión");
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function handleDelete() {
+    setDeleting(true);
+    try {
+      const res = await fetch(`/api/panel/barber/plans/${initial.slug}`, { method: "DELETE" });
+      const data = await res.json() as { error?: string };
+      if (!res.ok) {
+        messageApi.error(data?.error ?? "No se pudo eliminar");
+        return;
+      }
+      messageApi.success(`Plan "${initial.displayName}" eliminado`);
+      onDeleted(initial.slug);
+    } catch {
+      messageApi.error("Error de conexión");
+    } finally {
+      setDeleting(false);
     }
   }
 
@@ -85,10 +113,11 @@ function PlanCard({ config: initial }: PlanCardProps) {
         styles={{ body: { padding: "1.1rem 1.2rem" } }}
         title={
           <Space>
-            <Tag color={PLAN_COLORS[initial.plan]} style={{ fontSize: 12, fontWeight: 700 }}>
-              {initial.plan}
+            <Tag color={tagColor} style={{ fontSize: 12, fontWeight: 700 }}>
+              {initial.slug.toUpperCase()}
             </Tag>
             <span style={{ fontSize: 13, fontWeight: 700 }}>{initial.displayName}</span>
+            {isSystem && <Tag style={{ fontSize: 11 }}>Sistema</Tag>}
             {initial.description && (
               <Text type="secondary" style={{ fontSize: 12, fontWeight: 400 }}>
                 — {initial.description}
@@ -97,34 +126,51 @@ function PlanCard({ config: initial }: PlanCardProps) {
           </Space>
         }
         extra={
-          <Button
-            type="primary"
-            size="small"
-            icon={<SaveOutlined />}
-            loading={saving}
-            onClick={handleSave}
-            style={{
-              background: "hsl(var(--section-barber))",
-              borderColor: "hsl(var(--section-barber))",
-            }}
-          >
-            Guardar
-          </Button>
+          <Space>
+            {!isSystem && (
+              <Popconfirm
+                title="¿Eliminar este plan?"
+                description="Los tenants asignados perderán su plan custom."
+                onConfirm={handleDelete}
+                okText="Sí, eliminar"
+                cancelText="Cancelar"
+                okButtonProps={{ danger: true, loading: deleting }}
+              >
+                <Button
+                  size="small"
+                  danger
+                  icon={<DeleteOutlined />}
+                  loading={deleting}
+                >
+                  Eliminar
+                </Button>
+              </Popconfirm>
+            )}
+            <Button
+              type="primary"
+              size="small"
+              icon={<SaveOutlined />}
+              loading={saving}
+              onClick={handleSave}
+              style={{
+                background: "hsl(var(--section-barber))",
+                borderColor: "hsl(var(--section-barber))",
+              }}
+            >
+              Guardar
+            </Button>
+          </Space>
         }
       >
-        {/* Límites numéricos */}
         <Space size={32} style={{ marginBottom: 16 }}>
           <div>
             <Text type="secondary" style={{ fontSize: 12, display: "block", marginBottom: 4 }}>
               Máx. barberos
             </Text>
             <InputNumber
-              min={1}
-              max={9999}
-              value={maxBarbers}
+              min={1} max={9999} value={maxBarbers}
               onChange={(v) => setMaxBarbers(v ?? 1)}
-              style={{ width: 90 }}
-              size="small"
+              style={{ width: 90 }} size="small"
             />
           </div>
           <div>
@@ -132,12 +178,9 @@ function PlanCard({ config: initial }: PlanCardProps) {
               Máx. sucursales
             </Text>
             <InputNumber
-              min={1}
-              max={99}
-              value={maxBranches}
+              min={1} max={99} value={maxBranches}
               onChange={(v) => setMaxBranches(v ?? 1)}
-              style={{ width: 90 }}
-              size="small"
+              style={{ width: 90 }} size="small"
             />
           </div>
           <div>
@@ -152,7 +195,6 @@ function PlanCard({ config: initial }: PlanCardProps) {
 
         <Divider style={{ margin: "0 0 12px" }} />
 
-        {/* Módulos */}
         <Row gutter={[8, 8]}>
           {MODULE_KEYS.map((key) => (
             <Col key={key} xs={24} sm={12} md={8}>
@@ -171,24 +213,205 @@ function PlanCard({ config: initial }: PlanCardProps) {
   );
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
+// ─── CreatePlanModal ──────────────────────────────────────────────────────────
+
+interface CreatePlanModalProps {
+  open: boolean;
+  onClose: () => void;
+  onCreated: (plan: BarberPlanConfigItem) => void;
+}
+
+function CreatePlanModal({ open, onClose, onCreated }: CreatePlanModalProps) {
+  const [form]          = Form.useForm();
+  const [saving, setSaving] = useState(false);
+  const [modules, setModules] = useState<BarberModules>({ ...DEFAULT_MODULES });
+  const [messageApi, ctx] = message.useMessage();
+
+  function toggleModule(key: keyof BarberModules) {
+    setModules((prev) => ({ ...prev, [key]: !prev[key] }));
+  }
+
+  async function handleOk() {
+    let values: { name: string; slug: string; description?: string; maxBarbers: number; maxBranches: number };
+    try {
+      values = await form.validateFields();
+    } catch {
+      return;
+    }
+
+    setSaving(true);
+    try {
+      const res = await fetch("/api/panel/barber/plans", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          slug:        values.slug,
+          displayName: values.name,
+          description: values.description,
+          maxBarbers:  values.maxBarbers,
+          maxBranches: values.maxBranches,
+          modules,
+          active: true,
+        }),
+      });
+
+      const data = await res.json() as { data?: BarberPlanConfigItem; error?: string };
+
+      if (!res.ok) {
+        messageApi.error(data?.error ?? "Error al crear el plan");
+        return;
+      }
+
+      messageApi.success(`Plan "${values.name}" creado`);
+      form.resetFields();
+      setModules({ ...DEFAULT_MODULES });
+      onCreated(data.data!);
+      onClose();
+    } catch {
+      messageApi.error("Error de conexión");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  function handleCancel() {
+    form.resetFields();
+    setModules({ ...DEFAULT_MODULES });
+    onClose();
+  }
+
+  const enabledCount = MODULE_KEYS.filter((k) => modules[k]).length;
+
+  return (
+    <>
+      {ctx}
+      <Modal
+        title="Crear nuevo plan"
+        open={open}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        okText="Crear plan"
+        cancelText="Cancelar"
+        confirmLoading={saving}
+        width={700}
+      >
+        <Form form={form} layout="vertical" initialValues={{ maxBarbers: 5, maxBranches: 1 }}>
+          <Row gutter={12}>
+            <Col span={12}>
+              <Form.Item
+                name="name"
+                label="Nombre del plan"
+                rules={[{ required: true, message: "Ingresa el nombre" }]}
+              >
+                <Input placeholder="Ej: Premium, Starter, VIP…" />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item
+                name="slug"
+                label="Slug (identificador único)"
+                rules={[
+                  { required: true, message: "Ingresa el slug" },
+                  { pattern: /^[a-z0-9-]+$/, message: "Solo letras minúsculas, números y guiones" },
+                ]}
+              >
+                <Input placeholder="Ej: premium, starter-v2…" />
+              </Form.Item>
+            </Col>
+          </Row>
+          <Form.Item name="description" label="Descripción (opcional)">
+            <Input placeholder="Breve descripción del plan" />
+          </Form.Item>
+          <Row gutter={12}>
+            <Col span={12}>
+              <Form.Item name="maxBarbers" label="Máx. barberos">
+                <InputNumber min={1} max={9999} style={{ width: "100%" }} />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item name="maxBranches" label="Máx. sucursales">
+                <InputNumber min={1} max={99} style={{ width: "100%" }} />
+              </Form.Item>
+            </Col>
+          </Row>
+
+          <Divider style={{ margin: "4px 0 12px" }}>
+            Módulos incluidos — {enabledCount} / {MODULE_KEYS.length} seleccionados
+          </Divider>
+
+          <Row gutter={[8, 8]}>
+            {MODULE_KEYS.map((key) => (
+              <Col key={key} xs={24} sm={12} md={8}>
+                <Checkbox
+                  checked={modules[key]}
+                  onChange={() => toggleModule(key)}
+                  style={{ fontSize: 13 }}
+                >
+                  {MODULE_LABELS[key]}
+                </Checkbox>
+              </Col>
+            ))}
+          </Row>
+        </Form>
+      </Modal>
+    </>
+  );
+}
+
+// ─── PlanConfigList ───────────────────────────────────────────────────────────
 
 export function PlanConfigList({ initialPlans }: { initialPlans: BarberPlanConfigItem[] }) {
-  const order: BarberPlan[] = ["TRIAL", "BASIC", "PRO", "ENTERPRISE"];
-  const sorted = [...initialPlans].sort(
-    (a, b) => order.indexOf(a.plan) - order.indexOf(b.plan),
-  );
+  const [plans, setPlans]   = useState<BarberPlanConfigItem[]>(initialPlans);
+  const [showCreate, setShowCreate] = useState(false);
+
+  const systemOrder = ["trial", "basic", "pro", "enterprise"];
+  const sorted = [...plans].sort((a, b) => {
+    const ai = systemOrder.indexOf(a.slug);
+    const bi = systemOrder.indexOf(b.slug);
+    if (ai !== -1 && bi !== -1) return ai - bi;
+    if (ai !== -1) return -1;
+    if (bi !== -1) return 1;
+    return a.displayName.localeCompare(b.displayName);
+  });
+
+  function handleCreated(plan: BarberPlanConfigItem) {
+    setPlans((prev) => [...prev, plan]);
+  }
+
+  function handleDeleted(slug: string) {
+    setPlans((prev) => prev.filter((p) => p.slug !== slug));
+  }
 
   return (
     <div>
-      <Title level={5} style={{ marginBottom: 12, color: "hsl(var(--text-secondary))", fontWeight: 600 }}>
-        Planes disponibles ({sorted.length})
-      </Title>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+        <Title level={5} style={{ margin: 0, color: "hsl(var(--text-secondary))", fontWeight: 600 }}>
+          Planes disponibles ({plans.length})
+        </Title>
+        <Button
+          type="primary"
+          icon={<PlusOutlined />}
+          onClick={() => setShowCreate(true)}
+          style={{
+            background: "hsl(var(--section-barber))",
+            borderColor: "hsl(var(--section-barber))",
+          }}
+        >
+          Crear plan
+        </Button>
+      </div>
+
       <Space direction="vertical" size={12} style={{ width: "100%" }}>
         {sorted.map((plan) => (
-          <PlanCard key={plan.plan} config={plan} />
+          <PlanCard key={plan.slug} config={plan} onDeleted={handleDeleted} />
         ))}
       </Space>
+
+      <CreatePlanModal
+        open={showCreate}
+        onClose={() => setShowCreate(false)}
+        onCreated={handleCreated}
+      />
     </div>
   );
 }

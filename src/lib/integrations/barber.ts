@@ -89,7 +89,8 @@ export type BarberModules = {
 
 export type BarberPlanConfigItem = {
   id: number;
-  plan: BarberPlan;
+  slug: string;
+  plan: BarberPlan | null;   // null para planes custom
   displayName: string;
   description: string | null;
   maxBarbers: number;
@@ -101,12 +102,23 @@ export type BarberPlanConfigItem = {
   updatedAt: string;
 };
 
+export type CreateBarberPlanConfigInput = {
+  slug: string;
+  displayName: string;
+  description?: string;
+  maxBarbers?: number;
+  maxBranches?: number;
+  modules?: Partial<BarberModules>;
+  price?: number | null;
+  active?: boolean;
+};
+
 export type UpdateBarberPlanConfigInput = {
   displayName?: string;
   description?: string;
   maxBarbers?: number;
   maxBranches?: number;
-  modules?: BarberModules;
+  modules?: Partial<BarberModules>;
   price?: number | null;
   active?: boolean;
 };
@@ -117,11 +129,26 @@ export async function getBarberPlanConfigs() {
   });
 }
 
-export async function updateBarberPlanConfig(plan: BarberPlan, data: UpdateBarberPlanConfigInput) {
-  return fetchJson<BarberPlanConfigItem>(`${getBaseUrl()}/plans/${plan}`, {
+export async function createBarberPlanConfig(data: CreateBarberPlanConfigInput) {
+  return fetchJson<BarberPlanConfigItem>(`${getBaseUrl()}/plans`, {
+    method: "POST",
+    headers: { ...getHeaders(), "Content-Type": "application/json" },
+    body: data,
+  });
+}
+
+export async function updateBarberPlanConfig(slug: string, data: UpdateBarberPlanConfigInput) {
+  return fetchJson<BarberPlanConfigItem>(`${getBaseUrl()}/plans/${slug}`, {
     method: "PUT",
     headers: { ...getHeaders(), "Content-Type": "application/json" },
     body: data,
+  });
+}
+
+export async function deleteBarberPlanConfig(slug: string) {
+  return fetchJson<{ message: string }>(`${getBaseUrl()}/plans/${slug}`, {
+    method: "DELETE",
+    headers: getHeaders(),
   });
 }
 
