@@ -7,6 +7,10 @@ import { HealthBar } from "@/components/ui/HealthBar";
 import { MetricCard } from "@/components/ui/MetricCard";
 import { MomChart } from "@/components/ui/MomChart";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { PlanDonutChart } from "@/components/ui/PlanDonutChart";
+import { RevenueChart } from "@/components/ui/RevenueChart";
+import { TenantStatusChart } from "@/components/ui/TenantStatusChart";
+import type { TenantStatusRow } from "@/components/ui/TenantStatusChart";
 import { formatCurrency, formatNumber } from "@/lib/formatters";
 import { getBarberDashboard, getBarberHealth } from "@/lib/integrations/barber";
 import { getDteAnalytics, getDteAudit, getDteDashboard, getDteHealth } from "@/lib/integrations/dte";
@@ -206,6 +210,51 @@ export default async function OverviewV2() {
   );
 
   const hasErrors = services.some((service) => service.dashboardError || service.healthError);
+
+  // ── Datos para gráficos ───────────────────────────────
+  const PLAN_COLORS: Record<string, string> = {
+    TRIAL: "#f59e0b", BASIC: "#3b82f6", PRO: "#8b5cf6",
+    ENTERPRISE: "#ec4899", FREE: "#6b7280", ACTIVE: "#22c55e",
+  };
+
+  const planCountsMap: Record<string, number> = {};
+  services.forEach((svc) => {
+    if (!svc.planCounts) return;
+    Object.entries(svc.planCounts).forEach(([plan, total]) => {
+      planCountsMap[plan] = (planCountsMap[plan] ?? 0) + (total as number);
+    });
+  });
+  const donutData = Object.entries(planCountsMap)
+    .filter(([, v]) => v > 0)
+    .map(([name, value]) => ({ name, value, color: PLAN_COLORS[name] ?? "#94a3b8" }));
+  const donutTotal = donutData.reduce((s, d) => s + d.value, 0);
+
+  const tenantStatusData: TenantStatusRow[] = [
+    {
+      sistema: "DTE",
+      Activos:     state.dteDashboard.status === "fulfilled" ? state.dteDashboard.value.activos      : 0,
+      Trial:       state.dteDashboard.status === "fulfilled" ? state.dteDashboard.value.en_pruebas   : 0,
+      Suspendidos: state.dteDashboard.status === "fulfilled" ? state.dteDashboard.value.suspendidos  : 0,
+      Cancelados:  0,
+    },
+    {
+      sistema: "Barber",
+      Activos:     state.barberDashboard.status === "fulfilled" ? state.barberDashboard.value.activos     : 0,
+      Trial:       state.barberDashboard.status === "fulfilled" ? state.barberDashboard.value.en_trial    : 0,
+      Suspendidos: state.barberDashboard.status === "fulfilled" ? state.barberDashboard.value.suspendidos : 0,
+      Cancelados:  state.barberDashboard.status === "fulfilled" ? state.barberDashboard.value.cancelados  : 0,
+    },
+    {
+      sistema: "ERP",
+      Activos:     state.erpDashboard.status === "fulfilled" ? state.erpDashboard.value.activos     : 0,
+      Trial:       state.erpDashboard.status === "fulfilled" ? state.erpDashboard.value.en_trial    : 0,
+      Suspendidos: state.erpDashboard.status === "fulfilled" ? state.erpDashboard.value.suspendidos : 0,
+      Cancelados:  state.erpDashboard.status === "fulfilled" ? state.erpDashboard.value.cancelados  : 0,
+    },
+  ];
+
+  const dteKpis = state.dteAnalytics.status === "fulfilled" ? state.dteAnalytics.value.kpis : null;
+  const dteSerie = state.dteAnalytics.status === "fulfilled" ? state.dteAnalytics.value.serie : [];
 
   return (
     <div className="space-y-4">
@@ -508,6 +557,61 @@ export default async function OverviewV2() {
                 style={{ borderRadius: 16 }}
               />
             )}
+          </Card>
+        </Col>
+      </Row>
+
+      {/* ── Gráficos: ingresos + donut planes + estado tenants ── */}
+      <Row gutter={[12, 12]}>
+        {/* Ingresos mensuales */}
+        <Col xs={24} lg={12} xl={10}>
+          <Card
+            className="surface-card border-0"
+            title={
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                <span style={{ fontSize: 13, fontWeight: 700, color: "hsl(var(--text-secondary))" }}>
+                  Ingresos mensuales — DTE
+                </span>
+                {dteKpis && (
+                  <Tag bordered={false} style={{
+                    borderRadius: 999, fontSize: 11, margin: 0,
+                    background: dteKpis.crecimiento_mom >= 0 ? "hsl(142 71% 45% / 0.12)" : "hsl(0 84% 60% / 0.12)",
+                    color: dteKpis.crecimiento_mom >= 0 ? "#22c55e" : "#ef4444",
+                  }}>
+                    {dteKpis.crecimiento_mom >= 0 ? "+" : ""}{dteKpis.crecimiento_mom.toFixed(1)}% MoM
+                  </Tag>
+                )}
+              </div>
+            }
+            styles={{ body: { padding: "8px 12px 12px" } }}
+          >
+            {dteSerie.length ? (
+              <RevenueChart serie={dteSerie} momGrowth={dteKpis?.crecimiento_mom} />
+            ) : (
+              <Alert type="warning" showIcon message="Sin datos de ingresos" style={{ borderRadius: 12 }} />
+            )}
+          </Card>
+        </Col>
+
+        {/* Donut distribución planes */}
+        <Col xs={24} sm={12} xl={7}>
+          <Card
+            className="surface-card border-0"
+            title={<span style={{ fontSize: 13, fontWeight: 700, color: "hsl(var(--text-secondary))" }}>Planes — todos los sistemas</span>}
+            styles={{ body: { padding: "4px 12px 8px" } }}
+          >
+            <PlanDonutChart data={donutData} total={donutTotal} />
+          </Card>
+        </Col>
+
+        {/* Estado tenants por sistema */}
+        <Col xs={24} sm={12} xl={7}>
+          <Card
+            className="surface-card border-0"
+            title={<span style={{ fontSize: 13, fontWeight: 700, color: "hsl(var(--text-secondary))" }}>Estado tenants por sistema</span>}
+            styles={{ body: { padding: "8px 12px 12px" } }}
+          >
+            <TenantStatusChart data={tenantStatusData} />
           </Card>
         </Col>
       </Row>
