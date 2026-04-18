@@ -1,6 +1,7 @@
 import { DashboardChrome } from "@/components/layout/DashboardChrome";
 import { AntdProvider } from "@/components/providers/AntdProvider";
 import { ThemeHydrator } from "@/components/providers/ThemeHydrator";
+import { HealthProvider } from "@/components/providers/HealthProvider";
 import {
   DEFAULT_CONTROL_THEME_PRESET_ID,
   getControlThemePreset,
@@ -23,7 +24,9 @@ export default async function DashboardLayout({
       <style>{`:root { ${dashboardThemeCssText} }`}</style>
       <AntdProvider variant="dashboard" withApp={false}>
         <ThemeHydrator defaultPresetId={DEFAULT_CONTROL_THEME_PRESET_ID} />
-        <DashboardChrome>{children}</DashboardChrome>
+        <HealthProvider>
+          <DashboardChrome>{children}</DashboardChrome>
+        </HealthProvider>
       </AntdProvider>
     </>
   );

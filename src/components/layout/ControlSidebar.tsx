@@ -23,6 +23,7 @@ import {
   Users,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
+import { HealthDot } from "@/components/ui/HealthDot";
 
 const { Sider } = Layout;
 const { Text } = Typography;
@@ -36,7 +37,12 @@ const MENU_ITEMS: MenuProps["items"] = [
   { type: "divider" },
   {
     key: "dte",
-    label: "DTE Sistema",
+    label: (
+      <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
+        DTE Sistema
+        <HealthDot service="dte" />
+      </span>
+    ),
     icon: <FileText size={16} />,
     children: [
       { key: "/dte/dashboard", label: "Dashboard", icon: <LayoutDashboard size={14} /> },
@@ -54,7 +60,12 @@ const MENU_ITEMS: MenuProps["items"] = [
   },
   {
     key: "barber",
-    label: "Barber Pro",
+    label: (
+      <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
+        Barber Pro
+        <HealthDot service="barber" />
+      </span>
+    ),
     icon: <Scissors size={16} />,
     children: [
       { key: "/barber/dashboard", label: "Dashboard", icon: <LayoutDashboard size={14} /> },
@@ -66,7 +77,12 @@ const MENU_ITEMS: MenuProps["items"] = [
   },
   {
     key: "erp",
-    label: "ERP Full Pro",
+    label: (
+      <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
+        ERP Full Pro
+        <HealthDot service="erp" />
+      </span>
+    ),
     icon: <Building2 size={16} />,
     children: [
       { key: "/erp/dashboard", label: "Dashboard", icon: <LayoutDashboard size={14} /> },

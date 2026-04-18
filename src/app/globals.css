@@ -966,3 +966,10 @@ button, input, textarea, select { font: inherit; }
   .login-stage { min-height: unset; padding: 1.2rem; }
   .login-stage__metrics { grid-template-columns: 1fr; }
 }
+
+/* ── Health dot ping animation ── */
+@keyframes health-ping {
+  0%   { transform: scale(1);   opacity: .4; }
+  70%  { transform: scale(2.2); opacity: 0;  }
+  100% { transform: scale(2.2); opacity: 0;  }
+}

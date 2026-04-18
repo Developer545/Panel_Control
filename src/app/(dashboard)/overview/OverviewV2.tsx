@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { Alert, Button, Card, Col, Row, Tag } from "antd";
 import { Building2, FileText, Scissors, ShieldCheck, TriangleAlert, Users } from "lucide-react";
 import { DataTable } from "@/components/ui/DataTable";
+import { HealthBar } from "@/components/ui/HealthBar";
 import { MetricCard } from "@/components/ui/MetricCard";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { formatCurrency, formatNumber } from "@/lib/formatters";
@@ -221,6 +222,8 @@ export default async function OverviewV2() {
           </>
         }
       />
+
+      <HealthBar />
 
       <Row gutter={[12, 12]}>
         <Col xs={24} sm={12} xl={8}>
