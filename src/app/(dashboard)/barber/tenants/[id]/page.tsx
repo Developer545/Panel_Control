@@ -2,8 +2,12 @@ import { Alert, Card, Col, Descriptions, Row, Tag } from "antd";
 import { LinkOutlined, UserOutlined, ShopOutlined } from "@ant-design/icons";
 import { getErrorMessage } from "@/lib/error-message";
 import { formatDate } from "@/lib/formatters";
-import { getBarberTenant, getBarberTenantOwner } from "@/lib/integrations/barber";
+import {
+  getBarberTenant, getBarberTenantOwner,
+  getBarberTenantTeam, getBarberTenantBranches,
+} from "@/lib/integrations/barber";
 import { BarberTenantActions } from "@/components/barber/BarberTenantActions";
+import { BarberTenantTeam }    from "@/components/barber/BarberTenantTeam";
 import { CopyButton } from "@/components/ui/CopyButton";
 
 const BARBER_APP_URL = (process.env.BARBER_PANEL_URL ?? "https://speeddan-barberia.vercel.app").replace(/\/$/, "");
@@ -47,16 +51,20 @@ function CompactStat({
 
 async function loadData(id: string) {
   try {
-    const [tenant, owner] = await Promise.allSettled([
+    const [tenant, owner, team, branches] = await Promise.allSettled([
       getBarberTenant(Number(id)),
       getBarberTenantOwner(Number(id)),
+      getBarberTenantTeam(Number(id)),
+      getBarberTenantBranches(Number(id)),
     ]);
 
     if (tenant.status === "rejected") throw new Error(getErrorMessage(tenant.reason));
 
     return {
-      tenant: tenant.value,
-      owner: owner.status === "fulfilled" ? owner.value : null,
+      tenant:   tenant.value,
+      owner:    owner.status    === "fulfilled" ? owner.value    : null,
+      team:     team.status     === "fulfilled" ? team.value     : [],
+      branches: branches.status === "fulfilled" ? branches.value : [],
     };
   } catch (cause) {
     return { error: getErrorMessage(cause) };
@@ -84,7 +92,7 @@ export default async function BarberTenantDetailPage({
     );
   }
 
-  const { tenant, owner } = result;
+  const { tenant, owner, team, branches } = result;
   const loginUrl = `${BARBER_APP_URL}/login/${tenant.slug}`;
 
   return (
@@ -245,6 +253,14 @@ export default async function BarberTenantDetailPage({
           </div>
         </Col>
       </Row>
+
+      {/* ── Equipo del sistema ── */}
+      <BarberTenantTeam
+        tenantId={tenant.id}
+        owner={owner}
+        team={team}
+        branches={branches}
+      />
     </div>
   );
 }

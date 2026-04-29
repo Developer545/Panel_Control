@@ -71,20 +71,20 @@ export async function getBarberTenant(id: number) {
 
 // ── Plan Config ───────────────────────────────────────
 
+// Claves de módulo — deben coincidir exactamente con MODULE_KEYS en module-guard.ts de BarberPro
 export type BarberModules = {
-  appointments: boolean;
-  pos: boolean;
-  clients: boolean;
-  products: boolean;
-  expenses: boolean;
-  reports_basic: boolean;
-  accounts_receivable: boolean;
-  payroll: boolean;
-  billing_dte: boolean;
-  reports_advanced: boolean;
-  branches: boolean;
-  api_integrations: boolean;
-  loyalty: boolean;
+  pos:          boolean; // POS + Turnos de Caja
+  pos_dte:      boolean; // Documentos / Facturación DTE
+  appointments: boolean; // Citas y Caja de Citas
+  clients:      boolean; // Clientes
+  loyalty:      boolean; // Fidelización (Puntos y Tarjetas)
+  barbers:      boolean; // Barberos / Estilistas
+  services:     boolean; // Servicios / Tratamientos
+  products:     boolean; // Productos, Inventario y Compras
+  expenses:     boolean; // Gastos y Cuentas por Pagar
+  payroll:      boolean; // Planilla
+  branches:     boolean; // Sucursales
+  settings:     boolean; // Configuración del sistema
 };
 
 export type BarberPlanConfigItem = {
@@ -269,6 +269,53 @@ export async function getBarberTenantBranches(tenantId: number) {
   return fetchJson<BarberBranchItem[]>(
     `${getBaseUrl()}/tenants/${tenantId}/branches`,
     { headers: getHeaders() },
+  );
+}
+
+// ── Equipo del tenant (SUPERADMIN, GERENTE, USUARIO) ─────────────────────────
+
+export type BarberTeamRole = "SUPERADMIN" | "GERENTE" | "USUARIO";
+
+export type BarberTeamUser = {
+  id:           number;
+  fullName:     string;
+  email:        string;
+  role:         BarberTeamRole;
+  active:       boolean;
+  moduleAccess: string[] | null;
+  createdAt:    string;
+  branchId:     number | null;
+  branch: {
+    id:             number;
+    name:           string;
+    slug:           string;
+    isHeadquarters: boolean;
+  } | null;
+};
+
+export type CreateBarberTeamUserInput = {
+  role:      BarberTeamRole;
+  fullName:  string;
+  email:     string;
+  password:  string;
+  branchId?: number;
+};
+
+export async function getBarberTenantTeam(tenantId: number) {
+  return fetchJson<BarberTeamUser[]>(
+    `${getBaseUrl()}/tenants/${tenantId}/users`,
+    { headers: getHeaders() },
+  );
+}
+
+export async function createBarberTenantUser(tenantId: number, data: CreateBarberTeamUserInput) {
+  return fetchJson<BarberTeamUser>(
+    `${getBaseUrl()}/tenants/${tenantId}/users`,
+    {
+      method:  "POST",
+      headers: { ...getHeaders(), "Content-Type": "application/json" },
+      body:    data,
+    },
   );
 }
 
