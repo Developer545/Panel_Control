@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import {
-  Button, Card, Col, Descriptions, Drawer, Form, Input,
+  Alert, Button, Card, Col, Descriptions, Drawer, Form, Input,
   Modal, Row, Select, Space, Tag, Typography, message,
 } from "antd";
 import {
   UserOutlined, KeyOutlined, PlusOutlined, CopyOutlined,
-  CheckCircleOutlined, LockOutlined, TeamOutlined,
+  CheckCircleOutlined, LockOutlined, TeamOutlined, ReloadOutlined,
 } from "@ant-design/icons";
 import type {
   BarberTeamUser, BarberTeamRole, BarberBranchItem,
@@ -382,16 +382,50 @@ function CredentialsModal({
 // ── Componente principal ──────────────────────────────────────────────────────
 
 interface Props {
-  tenantId: number;
-  owner:    { id: number; fullName: string; email: string; role: string; createdAt: string } | null;
-  team:     BarberTeamUser[];
-  branches: BarberBranchItem[];
+  tenantId:  number;
+  owner:     { id: number; fullName: string; email: string; role: string; createdAt: string } | null;
+  team:      BarberTeamUser[];
+  teamError: boolean;
+  branches:  BarberBranchItem[];
 }
 
-export function BarberTenantTeam({ tenantId, owner, team: initialTeam, branches }: Props) {
-  const [team, setTeam]       = useState<BarberTeamUser[]>(initialTeam);
-  const [cred, setCred]       = useState<CreatedCredential | null>(null);
-  const [messageApi, ctx]     = message.useMessage();
+export function BarberTenantTeam({ tenantId, owner, team: initialTeam, teamError: initialTeamError, branches: initialBranches }: Props) {
+  const [team, setTeam]           = useState<BarberTeamUser[]>(initialTeam);
+  const [branches, setBranches]   = useState<BarberBranchItem[]>(initialBranches);
+  const [teamError, setTeamError] = useState(initialTeamError);
+  const [reloading, setReloading] = useState(false);
+  const [cred, setCred]           = useState<CreatedCredential | null>(null);
+  const [messageApi, ctx]         = message.useMessage();
+
+  // Si el SSR falló al cargar el equipo, reintentarlo desde el cliente
+  useEffect(() => {
+    if (!initialTeamError) return;
+    void reloadTeam();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  async function reloadTeam() {
+    setReloading(true);
+    try {
+      const [teamRes, branchRes] = await Promise.all([
+        fetch(`/api/panel/barber/tenants/${tenantId}/users`),
+        fetch(`/api/panel/barber/tenants/${tenantId}/branches`),
+      ]);
+      if (teamRes.ok) {
+        const data = await teamRes.json() as { data?: BarberTeamUser[] };
+        if (Array.isArray(data.data)) {
+          setTeam(data.data);
+          setTeamError(false);
+        }
+      }
+      if (branchRes.ok) {
+        const data = await branchRes.json() as { data?: BarberBranchItem[] };
+        if (Array.isArray(data.data)) setBranches(data.data);
+      }
+    } finally {
+      setReloading(false);
+    }
+  }
 
   const superadmin = team.find(u => u.role === "SUPERADMIN") ?? null;
   const gerente    = team.find(u => u.role === "GERENTE")    ?? null;
@@ -408,13 +442,32 @@ export function BarberTenantTeam({ tenantId, owner, team: initialTeam, branches 
       {ctx}
 
       <div style={{ marginTop: 24 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: teamError ? 10 : 14, flexWrap: "wrap" }}>
           <TeamOutlined style={{ color: "hsl(var(--section-barber))", fontSize: 16 }} />
           <Title level={5} style={{ margin: 0, color: "hsl(var(--text-secondary))" }}>
             Equipo del sistema
           </Title>
           <Tag style={{ fontSize: 11 }}>4 roles</Tag>
+          <Button
+            size="small"
+            icon={<ReloadOutlined />}
+            loading={reloading}
+            onClick={reloadTeam}
+            style={{ marginLeft: "auto", fontSize: 11 }}
+          >
+            Recargar equipo
+          </Button>
         </div>
+
+        {teamError && (
+          <Alert
+            type="warning"
+            showIcon
+            style={{ marginBottom: 12 }}
+            message="No se pudo cargar el equipo desde el servidor"
+            description="Los usuarios ya creados podrían no verse. Haz clic en 'Recargar equipo' para intentar de nuevo."
+          />
+        )}
 
         <Row gutter={[12, 12]}>
           {/* OWNER — solo lectura, ya existe al crear el tenant */}

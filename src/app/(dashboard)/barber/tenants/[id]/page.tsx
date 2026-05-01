@@ -62,10 +62,11 @@ async function loadData(id: string) {
     if (tenant.status === "rejected") throw new Error(getErrorMessage(tenant.reason));
 
     return {
-      tenant:   tenant.value,
-      owner:    owner.status    === "fulfilled" ? owner.value    : null,
-      team:     team.status     === "fulfilled" ? team.value     : [],
-      branches: branches.status === "fulfilled" ? branches.value : [],
+      tenant:    tenant.value,
+      owner:     owner.status    === "fulfilled" ? owner.value    : null,
+      team:      team.status     === "fulfilled" && Array.isArray(team.value) ? team.value : [],
+      teamError: team.status     === "rejected",
+      branches:  branches.status === "fulfilled" && Array.isArray(branches.value) ? branches.value : [],
     };
   } catch (cause) {
     return { error: getErrorMessage(cause) };
@@ -93,7 +94,7 @@ export default async function BarberTenantDetailPage({
     );
   }
 
-  const { tenant, owner, team, branches } = result;
+  const { tenant, owner, team, teamError, branches } = result;
   const loginUrl = `${BARBER_APP_URL}/login/${tenant.slug}`;
 
   return (
@@ -267,6 +268,7 @@ export default async function BarberTenantDetailPage({
         tenantId={tenant.id}
         owner={owner}
         team={team}
+        teamError={teamError}
         branches={branches}
       />
     </div>
