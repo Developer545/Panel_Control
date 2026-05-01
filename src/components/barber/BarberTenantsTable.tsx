@@ -183,7 +183,7 @@ export function BarberTenantsTable({
           href={`${barberAppUrl}/login/${row.slug}`}
           target="_blank"
           rel="noopener noreferrer"
-          style={{ fontSize: 12, color: "hsl(172 78% 28%)", whiteSpace: "nowrap" }}
+          style={{ fontSize: 12, color: "hsl(var(--section-barber))", whiteSpace: "nowrap" }}
         >
           /login/{row.slug} ↗
         </Link>
@@ -209,7 +209,7 @@ export function BarberTenantsTable({
               <Button
                 size="small"
                 icon={<ImportOutlined />}
-                style={{ color: "hsl(172 50% 40%)", borderColor: "hsl(172 50% 40%)" }}
+                style={{ color: "hsl(var(--section-barber))", borderColor: "hsl(var(--section-barber))" }}
               />
             </Link>
           </Tooltip>

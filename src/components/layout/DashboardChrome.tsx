@@ -112,7 +112,7 @@ export function DashboardChrome({ children }: { children: ReactNode }) {
               />
               <Badge
                 variant="outline"
-                className="section-badge"
+                className="section-badge topbar-section-badge"
                 style={{
                   "--section-color": `hsl(var(${active.accent}))`,
                   "--section-bg":    `hsl(var(${active.accent}) / 0.1)`,
@@ -138,6 +138,7 @@ export function DashboardChrome({ children }: { children: ReactNode }) {
                 <Button
                   size="small"
                   type="text"
+                  className="topbar-overview-btn"
                   onClick={() => router.push("/overview")}
                   style={{ color: "hsl(var(--text-muted))", fontSize: 12 }}
                 >
@@ -147,7 +148,7 @@ export function DashboardChrome({ children }: { children: ReactNode }) {
 
               <Badge
                 variant="outline"
-                className="section-badge"
+                className="section-badge topbar-status-badge"
                 style={{
                   "--section-color": "hsl(var(--status-success))",
                   "--section-bg":    "hsl(var(--status-success-bg))",

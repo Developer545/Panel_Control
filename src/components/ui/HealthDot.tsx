@@ -7,10 +7,10 @@ import { formatNumber } from "@/lib/formatters";
 type Service = "barber" | "dte" | "erp";
 
 const STATUS_CONFIG = {
-  ok:       { color: "#22c55e", label: "Operativo",    pulse: true  },
-  degraded: { color: "#f59e0b", label: "Con alerta",   pulse: false },
-  error:    { color: "#ef4444", label: "Sin conexión", pulse: false },
-  unknown:  { color: "#6b7280", label: "Desconocido",  pulse: false },
+  ok:       { color: "hsl(var(--state-success))", label: "Operativo",    pulse: true  },
+  degraded: { color: "hsl(var(--state-warning))", label: "Con alerta",   pulse: false },
+  error:    { color: "hsl(var(--state-danger))",  label: "Sin conexión", pulse: false },
+  unknown:  { color: "hsl(var(--text-muted))",    label: "Desconocido",  pulse: false },
 } as const;
 
 export function HealthDot({ service }: { service: Service }) {
@@ -24,7 +24,7 @@ export function HealthDot({ service }: { service: Service }) {
           width: 7,
           height: 7,
           borderRadius: "50%",
-          background: "#6b7280",
+          background: "hsl(var(--text-muted))",
           flexShrink: 0,
           opacity: 0.5,
         }}

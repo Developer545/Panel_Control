@@ -216,7 +216,7 @@ button, input, textarea, select { font: inherit; }
    ═══════════════════════════════════════════════════════════ */
 
 .glass-topbar {
-  background: hsl(var(--raw-white)) !important;
+  background: hsl(var(--bg-surface)) !important;
   border-bottom: 1px solid hsl(var(--border-default)) !important;
   box-shadow: 0 1px 3px 0 hsl(var(--raw-black) / 0.06);
 }
@@ -227,7 +227,7 @@ button, input, textarea, select { font: inherit; }
 }
 
 .glass-metric-card {
-  background: hsl(var(--raw-white)) !important;
+  background: hsl(var(--bg-surface)) !important;
   border: 1px solid hsl(var(--border-default)) !important;
   box-shadow: var(--shadow-card);
 }
@@ -426,7 +426,7 @@ button, input, textarea, select { font: inherit; }
 }
 
 .control-dashboard .surface-card {
-  background: hsl(var(--raw-white));
+  background: hsl(var(--bg-surface));
   border: 1px solid hsl(var(--border-default));
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-card);
@@ -441,7 +441,7 @@ button, input, textarea, select { font: inherit; }
 }
 
 .control-dashboard .ant-card {
-  background: hsl(var(--raw-white)) !important;
+  background: hsl(var(--bg-surface)) !important;
   border-color: hsl(var(--border-default)) !important;
   box-shadow: var(--shadow-card);
 }
@@ -930,7 +930,7 @@ button, input, textarea, select { font: inherit; }
 
   /* Padding reducido en móvil */
   .ant-layout-content[style] {
-    padding: 14px 14px 24px !important;
+    padding: 12px 12px 24px !important;
   }
 
   /* Page header en columna en móvil */
@@ -943,9 +943,24 @@ button, input, textarea, select { font: inherit; }
     width: 100%;
   }
 
-  /* Metric cards: 2 columnas en móvil si caben */
+  /* Metric cards: valores más pequeños */
   .metric-card__value .ant-statistic-content-value {
-    font-size: 1.75rem;
+    font-size: 1.65rem;
+  }
+
+  /* Tablas scrollables en móvil */
+  .control-dashboard .ant-table-wrapper {
+    overflow-x: auto !important;
+  }
+
+  .control-dashboard .ant-table {
+    min-width: 640px;
+  }
+
+  /* HealthBar en móvil: columna */
+  .health-bar-wrap {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }
 
@@ -965,6 +980,207 @@ button, input, textarea, select { font: inherit; }
   .login-shell { padding: 0.9rem; }
   .login-stage { min-height: unset; padding: 1.2rem; }
   .login-stage__metrics { grid-template-columns: 1fr; }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ANT DESIGN — TABLE DARK MODE OVERRIDES
+   ═══════════════════════════════════════════════════════════ */
+.control-dashboard .ant-table {
+  background: hsl(var(--bg-surface)) !important;
+  color: hsl(var(--text-primary)) !important;
+}
+
+.control-dashboard .ant-table-thead > tr > th,
+.control-dashboard .ant-table-thead > tr > td {
+  background: hsl(var(--bg-subtle)) !important;
+  color: hsl(var(--text-muted)) !important;
+  border-bottom-color: hsl(var(--border-default)) !important;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.control-dashboard .ant-table-tbody > tr > td {
+  background: hsl(var(--bg-surface)) !important;
+  color: hsl(var(--text-primary)) !important;
+  border-bottom-color: hsl(var(--border-default) / 0.7) !important;
+}
+
+.control-dashboard .ant-table-tbody > tr:hover > td,
+.control-dashboard .ant-table-tbody > tr.ant-table-row:hover > td {
+  background: hsl(var(--bg-subtle)) !important;
+}
+
+.control-dashboard .ant-table-tbody > tr.ant-table-row-selected > td {
+  background: hsl(var(--accent) / 0.08) !important;
+}
+
+.control-dashboard .ant-table-placeholder {
+  background: hsl(var(--bg-surface)) !important;
+  color: hsl(var(--text-muted)) !important;
+}
+
+.control-dashboard .ant-table-footer {
+  background: hsl(var(--bg-subtle)) !important;
+  border-top-color: hsl(var(--border-default)) !important;
+}
+
+.control-dashboard .ant-pagination-item {
+  background: hsl(var(--bg-surface)) !important;
+  border-color: hsl(var(--border-default)) !important;
+}
+
+.control-dashboard .ant-pagination-item a {
+  color: hsl(var(--text-secondary)) !important;
+}
+
+.control-dashboard .ant-pagination-item-active {
+  background: hsl(var(--accent)) !important;
+  border-color: transparent !important;
+}
+
+.control-dashboard .ant-pagination-item-active a {
+  color: hsl(var(--text-inverse)) !important;
+}
+
+.control-dashboard .ant-pagination-prev button,
+.control-dashboard .ant-pagination-next button {
+  background: hsl(var(--bg-surface)) !important;
+  border-color: hsl(var(--border-default)) !important;
+  color: hsl(var(--text-secondary)) !important;
+}
+
+.control-dashboard .ant-pagination-options .ant-select-selector {
+  background: hsl(var(--bg-surface)) !important;
+  border-color: hsl(var(--border-default)) !important;
+  color: hsl(var(--text-primary)) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ANT DESIGN — SELECT / DROPDOWN DARK MODE
+   ═══════════════════════════════════════════════════════════ */
+.ant-select-dropdown {
+  background: hsl(var(--bg-surface)) !important;
+  border: 1px solid hsl(var(--border-default)) !important;
+  box-shadow: var(--shadow-soft) !important;
+}
+
+.ant-select-item {
+  color: hsl(var(--text-primary)) !important;
+}
+
+.ant-select-item:hover,
+.ant-select-item-option-active {
+  background: hsl(var(--bg-subtle)) !important;
+}
+
+.ant-select-item-option-selected {
+  background: hsl(var(--accent) / 0.1) !important;
+  color: hsl(var(--accent)) !important;
+  font-weight: 600;
+}
+
+.ant-select-selector {
+  color: hsl(var(--text-primary)) !important;
+}
+
+.ant-select-arrow {
+  color: hsl(var(--text-muted)) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ANT DESIGN — TOOLTIP DARK MODE
+   ═══════════════════════════════════════════════════════════ */
+.ant-tooltip .ant-tooltip-inner {
+  background: hsl(var(--bg-inverse)) !important;
+  color: hsl(var(--text-inverse)) !important;
+  font-size: 12px;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ANT DESIGN — MODAL DARK MODE
+   ═══════════════════════════════════════════════════════════ */
+.ant-modal-content {
+  background: hsl(var(--bg-surface)) !important;
+  border: 1px solid hsl(var(--border-default));
+}
+
+.ant-modal-header {
+  background: hsl(var(--bg-surface)) !important;
+  border-bottom-color: hsl(var(--border-default)) !important;
+}
+
+.ant-modal-title {
+  color: hsl(var(--text-primary)) !important;
+}
+
+.ant-modal-close {
+  color: hsl(var(--text-muted)) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ANT DESIGN — DRAWER DARK MODE
+   ═══════════════════════════════════════════════════════════ */
+.ant-drawer-content {
+  background: hsl(var(--bg-surface)) !important;
+}
+
+.ant-drawer-header {
+  background: hsl(var(--bg-surface)) !important;
+  border-bottom-color: hsl(var(--border-default)) !important;
+}
+
+.ant-drawer-title {
+  color: hsl(var(--text-primary)) !important;
+}
+
+.ant-drawer-close {
+  color: hsl(var(--text-muted)) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ANT DESIGN — TAGS / BADGES DARK MODE
+   ═══════════════════════════════════════════════════════════ */
+.control-dashboard .ant-tag {
+  border-radius: var(--radius-xs);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ANT DESIGN — FORM DARK MODE
+   ═══════════════════════════════════════════════════════════ */
+.ant-form-item-explain-error {
+  color: hsl(var(--state-danger)) !important;
+}
+
+.ant-input-outlined,
+.ant-input-affix-wrapper,
+.ant-select-outlined .ant-select-selector,
+.ant-textarea-outlined {
+  color: hsl(var(--text-primary)) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RESPONSIVE — Topbar improvements
+   ═══════════════════════════════════════════════════════════ */
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 480px) {
+  .topbar-section-badge { display: none !important; }
+  .topbar-status-badge  { display: none !important; }
+  .topbar-overview-btn  { display: none !important; }
+}
+
+@media (max-width: 640px) {
+  .topbar-overview-btn { display: none !important; }
 }
 
 /* ── Health dot ping animation ── */

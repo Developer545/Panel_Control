@@ -182,7 +182,7 @@ function SidebarContent({
           justifyContent: "space-between",
           gap: 10,
           padding: collapsed ? "10px 10px" : "10px 14px",
-          borderBottom: "1px solid hsl(262 30% 50% / 0.18)",
+          borderBottom: "1px solid hsl(var(--sidebar-border))",
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
@@ -325,11 +325,11 @@ export function ControlSidebar({ mobileOpen = false, onMobileClose }: ControlSid
         styles={{
           body: {
             padding: 0,
-            background: "hsl(222 47% 7% / 0.92)",
+            background: "hsl(var(--bg-sidebar))",
             backdropFilter: "blur(20px) saturate(140%)",
             WebkitBackdropFilter: "blur(20px) saturate(140%)",
           },
-          wrapper: { boxShadow: "4px 0 40px -8px hsl(222 47% 4% / 0.45)" },
+          wrapper: { boxShadow: "var(--shadow-xl)" },
         }}
       >
         <SidebarContent {...contentProps} />

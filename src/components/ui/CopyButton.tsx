@@ -17,7 +17,7 @@ export function CopyButton({ text, label = "Copiar" }: { text: string; label?: s
   return (
     <Button
       size="small"
-      icon={copied ? <CheckOutlined style={{ color: "#0d9488" }} /> : <CopyOutlined />}
+      icon={copied ? <CheckOutlined style={{ color: "hsl(var(--state-success))" }} /> : <CopyOutlined />}
       onClick={handleCopy}
       style={{ fontSize: 12 }}
     >

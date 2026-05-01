@@ -45,7 +45,7 @@ function CustomTooltip({
       <div style={{ fontWeight: 700, marginBottom: 4 }}>{label}</div>
       <div style={{ color: "hsl(var(--text-secondary))" }}>
         Ingresos:{" "}
-        <strong style={{ color: "#22c55e" }}>
+        <strong style={{ color: "hsl(var(--state-success))" }}>
           ${Number(payload[0].value).toLocaleString("es-SV", { minimumFractionDigits: 2 })}
         </strong>
       </div>
@@ -80,8 +80,8 @@ export function RevenueChart({ serie, momGrowth }: RevenueChartProps) {
             style={{
               fontSize: 12,
               fontWeight: 700,
-              color: isPositive ? "#22c55e" : "#ef4444",
-              background: isPositive ? "hsl(142 71% 45% / 0.12)" : "hsl(0 84% 60% / 0.12)",
+              color: isPositive ? "hsl(var(--state-success))" : "hsl(var(--state-danger))",
+              background: isPositive ? "hsl(var(--status-success-bg))" : "hsl(var(--status-error-bg))",
               padding: "2px 7px",
               borderRadius: 999,
             }}

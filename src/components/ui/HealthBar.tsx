@@ -11,10 +11,10 @@ const SERVICE_LABELS: Record<string, string> = {
 };
 
 const STATUS_CONFIG = {
-  ok:       { color: "#22c55e", label: "Operativo",    bg: "hsl(142 71% 45% / 0.12)" },
-  degraded: { color: "#f59e0b", label: "Con alerta",   bg: "hsl(38 92% 50% / 0.12)"  },
-  error:    { color: "#ef4444", label: "Sin conexion", bg: "hsl(0 84% 60% / 0.12)"   },
-  unknown:  { color: "#6b7280", label: "Desconocido",  bg: "hsl(220 9% 46% / 0.12)"  },
+  ok:       { color: "hsl(var(--state-success))", border: "hsl(var(--state-success) / 0.25)", label: "Operativo",    bg: "hsl(var(--status-success-bg))" },
+  degraded: { color: "hsl(var(--state-warning))", border: "hsl(var(--state-warning) / 0.25)", label: "Con alerta",   bg: "hsl(var(--status-warning-bg))" },
+  error:    { color: "hsl(var(--state-danger))",  border: "hsl(var(--state-danger)  / 0.25)", label: "Sin conexion", bg: "hsl(var(--status-error-bg))"   },
+  unknown:  { color: "hsl(var(--text-muted))",    border: "hsl(var(--text-muted) / 0.25)",    label: "Desconocido",  bg: "hsl(var(--bg-subtle))"         },
 } as const;
 
 function formatCheckedAt(iso: string): string {
@@ -61,7 +61,7 @@ export function HealthBar() {
               padding: "3px 10px",
               borderRadius: 999,
               background: cfg.bg,
-              border: `1px solid ${cfg.color}22`,
+              border: `1px solid ${cfg.border}`,
               cursor: "default",
             }}
           >
