@@ -20,10 +20,14 @@ export async function fetchJson<T>(url: string, options: RequestOptions = {}): P
   const payload = text ? (JSON.parse(text) as unknown) : null;
 
   if (!response.ok) {
+    const p = payload as Record<string, unknown> | null;
+    const errField = p?.error;
     const message =
-      (payload as { error?: { message?: string } } | null)?.error?.message ??
-      (payload as { message?: string } | null)?.message ??
-      `No se pudo completar la solicitud a ${url}`;
+      (typeof errField === "object" && errField !== null
+        ? (errField as { message?: string }).message
+        : typeof errField === "string" ? errField : undefined) ??
+      (p?.message as string | undefined) ??
+      `HTTP ${response.status} — ${url}`;
 
     throw new Error(message);
   }
