@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Button, message, Modal, Space, Table, Tag, Tooltip, Typography } from "antd";
-import { EditOutlined, DeleteOutlined, ExclamationCircleOutlined, CopyOutlined, KeyOutlined, TeamOutlined } from "@ant-design/icons";
+import { EditOutlined, DeleteOutlined, ExclamationCircleOutlined, CopyOutlined, KeyOutlined, TeamOutlined, ImportOutlined } from "@ant-design/icons";
 import type { ColumnsType } from "antd/es/table";
 import type { BarberTenantListItem } from "@/lib/integrations/barber";
 import { EditBarberTenantDrawer } from "./EditBarberTenantDrawer";
@@ -201,6 +201,15 @@ export function BarberTenantsTable({
                 size="small"
                 icon={<TeamOutlined />}
                 style={{ color: "hsl(var(--section-barber))", borderColor: "hsl(var(--section-barber))" }}
+              />
+            </Link>
+          </Tooltip>
+          <Tooltip title="Importar datos">
+            <Link href={`/barber/tenants/${row.id}/import`}>
+              <Button
+                size="small"
+                icon={<ImportOutlined />}
+                style={{ color: "hsl(172 50% 40%)", borderColor: "hsl(172 50% 40%)" }}
               />
             </Link>
           </Tooltip>
