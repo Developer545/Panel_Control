@@ -319,18 +319,48 @@ export async function createBarberTenantUser(tenantId: number, data: CreateBarbe
   );
 }
 
-export async function getBarberHealth(): Promise<ServiceHealth> {
-  const data = await fetchJson<{
-    status: "ok" | "error";
-    timestamp: string;
-    db_latency_ms: number;
-  }>(`${getBaseUrl()}/health`, {
+export type BarberHealthDetail = {
+  status: "ok" | "error";
+  timestamp: string;
+  database: {
+    latency_ms: number;
+    version: string;
+    server_time: string | null;
+  };
+  process: {
+    uptime_seconds: number;
+    node_version: string;
+    platform: string;
+    arch: string;
+    environment: string;
+    pid: number;
+    memory: {
+      rss_mb: number;
+      heap_used_mb: number;
+      heap_total_mb: number;
+      external_mb: number;
+    };
+  };
+  tenants: {
+    total: number;
+    activos: number;
+    en_trial: number;
+    suspendidos: number;
+    cancelados: number;
+  };
+};
+
+export async function getBarberHealthDetail(): Promise<BarberHealthDetail> {
+  return fetchJson<BarberHealthDetail>(`${getBaseUrl()}/health`, {
     headers: getHeaders(),
   });
+}
 
+export async function getBarberHealth(): Promise<ServiceHealth> {
+  const data = await getBarberHealthDetail();
   return {
     status: data.status,
     timestamp: data.timestamp,
-    latencyMs: data.db_latency_ms,
+    latencyMs: data.database.latency_ms,
   };
 }
