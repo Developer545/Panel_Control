@@ -357,10 +357,13 @@ export async function getBarberHealthDetail(): Promise<BarberHealthDetail> {
 }
 
 export async function getBarberHealth(): Promise<ServiceHealth> {
-  const data = await getBarberHealthDetail();
+  const data = await fetchJson<BarberHealthDetail & { db_latency_ms?: number }>(`${getBaseUrl()}/health`, {
+    headers: getHeaders(),
+  });
   return {
     status: data.status,
     timestamp: data.timestamp,
-    latencyMs: data.database.latency_ms,
+    // Soporta formato nuevo (data.database) y formato antiguo (data.db_latency_ms)
+    latencyMs: data.database?.latency_ms ?? data.db_latency_ms ?? 0,
   };
 }
