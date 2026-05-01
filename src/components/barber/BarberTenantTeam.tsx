@@ -72,9 +72,13 @@ function RoleCard({ role, user, tenantId, branches, onCreated }: RoleCardProps) 
         headers: { "Content-Type": "application/json" },
         body:    JSON.stringify({ role, ...values }),
       });
-      const data = await res.json() as { data?: BarberTeamUser; error?: string };
+      const data = await res.json() as { data?: BarberTeamUser; error?: { message?: string } | string };
       if (!res.ok) {
-        messageApi.error(data.error ?? "Error al crear el usuario");
+        const errMsg =
+          typeof data.error === "string"
+            ? data.error
+            : (data.error as { message?: string } | undefined)?.message ?? "Error al crear el usuario";
+        messageApi.error(errMsg);
         return;
       }
       onCreated(data.data!, values.password);
