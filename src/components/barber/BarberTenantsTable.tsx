@@ -111,6 +111,8 @@ export function BarberTenantsTable({
     {
       key: "name",
       title: "Negocio",
+      width: 170,
+      fixed: "left",
       render: (_, row) => (
         <Link href={`/barber/tenants/${row.id}`} style={{ fontWeight: 600 }}>
           {row.name}
@@ -120,6 +122,7 @@ export function BarberTenantsTable({
     {
       key: "businessType",
       title: "Tipo",
+      width: 90,
       render: (_, row) => (
         <Tag color={row.businessType === "SALON" ? "magenta" : "blue"}>
           {row.businessType === "SALON" ? "Salón" : "Barbería"}
@@ -130,15 +133,18 @@ export function BarberTenantsTable({
       key: "slug",
       title: "Slug",
       dataIndex: "slug",
+      width: 130,
     },
     {
       key: "plan",
       title: "Plan",
       dataIndex: "plan",
+      width: 90,
     },
     {
       key: "status",
       title: "Estado",
+      width: 100,
       render: (_, row) => (
         <Tag color={statusColor(row.status)}>{row.status}</Tag>
       ),
@@ -146,11 +152,13 @@ export function BarberTenantsTable({
     {
       key: "paidUntil",
       title: "Pago hasta",
+      width: 105,
       render: (_, row) => formatDate(row.paidUntil),
     },
     {
       key: "owner",
       title: "Propietario",
+      width: 185,
       render: (_, row) => {
         const owner = row.users?.[0];
         if (!owner) return <span style={{ color: "hsl(var(--text-muted))", fontSize: 12 }}>—</span>;
@@ -173,11 +181,13 @@ export function BarberTenantsTable({
     {
       key: "city",
       title: "Ciudad",
+      width: 100,
       render: (_, row) => row.city ?? "—",
     },
     {
       key: "acceso",
       title: "URL de acceso",
+      width: 155,
       render: (_, row) => (
         <Link
           href={`${barberAppUrl}/login/${row.slug}`}
@@ -193,6 +203,8 @@ export function BarberTenantsTable({
       key: "actions",
       title: "Acciones",
       align: "center",
+      width: 148,
+      fixed: "right",
       render: (_, row) => (
         <Space size={4}>
           <Tooltip title="Gestionar equipo (roles)">
@@ -248,6 +260,7 @@ export function BarberTenantsTable({
         columns={columns}
         dataSource={items}
         rowKey="id"
+        scroll={{ x: 1280 }}
         pagination={{
           total,
           current: currentPage,
@@ -285,8 +298,8 @@ export function BarberTenantsTable({
           <div style={{ marginTop: 8 }}>
             <div
               style={{
-                background: "hsl(172 78% 28% / 0.06)",
-                border: "1px solid hsl(172 78% 28% / 0.25)",
+                background: "hsl(var(--section-barber) / 0.08)",
+                border: "1px solid hsl(var(--section-barber) / 0.25)",
                 borderRadius: 8,
                 padding: "12px 16px",
                 marginBottom: 12,

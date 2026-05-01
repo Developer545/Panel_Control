@@ -1026,6 +1026,22 @@ button, input, textarea, select { font: inherit; }
   border-top-color: hsl(var(--border-default)) !important;
 }
 
+/* Columnas fijas (sticky left/right) */
+.control-dashboard .ant-table-cell-fix-left,
+.control-dashboard .ant-table-cell-fix-right {
+  background: hsl(var(--bg-surface)) !important;
+}
+
+.control-dashboard .ant-table-tbody > tr:hover .ant-table-cell-fix-left,
+.control-dashboard .ant-table-tbody > tr:hover .ant-table-cell-fix-right {
+  background: hsl(var(--bg-subtle)) !important;
+}
+
+.control-dashboard .ant-table-thead .ant-table-cell-fix-left,
+.control-dashboard .ant-table-thead .ant-table-cell-fix-right {
+  background: hsl(var(--bg-subtle)) !important;
+}
+
 .control-dashboard .ant-pagination-item {
   background: hsl(var(--bg-surface)) !important;
   border-color: hsl(var(--border-default)) !important;
