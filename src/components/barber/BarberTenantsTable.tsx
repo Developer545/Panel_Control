@@ -186,16 +186,16 @@ export function BarberTenantsTable({
     },
     {
       key: "acceso",
-      title: "URL de acceso",
-      width: 155,
+      title: "Acceso",
+      width: 115,
       render: (_, row) => (
         <Link
           href={`${barberAppUrl}/login/${row.slug}`}
           target="_blank"
           rel="noopener noreferrer"
-          style={{ fontSize: 12, color: "hsl(var(--section-barber))", whiteSpace: "nowrap" }}
+          style={{ fontSize: 11, color: "hsl(var(--section-barber))", whiteSpace: "nowrap" }}
         >
-          /login/{row.slug} ↗
+          /{row.slug} ↗
         </Link>
       ),
     },
@@ -260,7 +260,7 @@ export function BarberTenantsTable({
         columns={columns}
         dataSource={items}
         rowKey="id"
-        scroll={{ x: "max-content" }}
+        scroll={{ x: 1200 }}
         pagination={{
           total,
           current: currentPage,

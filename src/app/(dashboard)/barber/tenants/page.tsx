@@ -72,20 +72,17 @@ export default async function BarberTenantsPage({
         size="small"
         title="Listado de barberías"
         extra={<Tag bordered={false} color="processing">{result.tenants.total} coincidencias</Tag>}
-        styles={{ body: { padding: 0 } }}
       >
-        <div style={{ padding: "12px 16px" }}>
+        <div style={{ marginBottom: 12 }}>
           <BarberTenantsSearch initialSearch={search} />
         </div>
-        <div style={{ overflowX: "auto" }}>
-          <BarberTenantsTable
-            items={result.tenants.items}
-            barberAppUrl={BARBER_APP_URL}
-            total={result.tenants.total}
-            currentPage={result.tenants.page}
-            pageSize={result.tenants.limit}
-          />
-        </div>
+        <BarberTenantsTable
+          items={result.tenants.items}
+          barberAppUrl={BARBER_APP_URL}
+          total={result.tenants.total}
+          currentPage={result.tenants.page}
+          pageSize={result.tenants.limit}
+        />
       </Card>
     </div>
   );
